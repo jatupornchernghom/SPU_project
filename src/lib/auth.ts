@@ -35,6 +35,12 @@ declare module "@auth/core/jwt" {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
+  // Required when self-hosting outside Vercel (Render, Railway, Fly, Docker,
+  // etc.) — Auth.js can't auto-detect the platform's host the way it does on
+  // Vercel, so it rejects every request as an "UntrustedHost" unless told to
+  // trust the incoming Host header. Safe here since NEXTAUTH_URL also pins
+  // the expected origin.
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {
