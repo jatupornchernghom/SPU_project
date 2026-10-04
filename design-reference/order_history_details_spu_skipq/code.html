@@ -1,0 +1,530 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline-variant": "#e2bdc7", "on-tertiary": "#ffffff", "surface-container": "#eaeef8", "on-secondary-fixed": "#3d0600", "on-secondary-container": "#570c00", "on-tertiary-fixed": "#001f27", "on-secondary": "#ffffff", "primary-fixed": "#ffd9e2", "surface-variant": "#dee2ec", "surface-container-highest": "#dee2ec", "secondary-fixed-dim": "#ffb4a3", "on-primary-fixed": "#3e001e", "on-surface": "#171c23", "on-secondary-fixed-variant": "#8c1900", "inverse-primary": "#ffb0c9", "surface-dim": "#d6dae4", "primary-container": "#e6007e", "on-tertiary-fixed-variant": "#004e5f", "error-container": "#ffdad6", "on-background": "#171c23", "on-tertiary-container": "#000609", "tertiary-fixed-dim": "#4cd6fb", "background": "#f8f9ff", "secondary-container": "#fd5835", "inverse-on-surface": "#edf1fb", "outline": "#8e6f77", "on-primary-container": "#ffffff", "on-error": "#ffffff", "surface-container-low": "#f0f4fd", "on-error-container": "#93000a", "tertiary-fixed": "#b3ebff", "surface": "#f8f9ff", "primary-fixed-dim": "#ffb0c9", "inverse-surface": "#2c3138", "on-surface-variant": "#5a3f47", "secondary": "#b52603", "tertiary": "#00677d", "secondary-fixed": "#ffdad2", "primary": "#b90064", "surface-tint": "#b90064", "tertiary-container": "#00829d", "surface-container-high": "#e4e8f2", "error": "#ba1a1a", "on-primary": "#ffffff", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#8e004b", "surface-bright": "#f8f9ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "screen-padding-mobile": "1rem", "space-2xl": "2rem", "space-md": "1rem", "space-2xs": "0.25rem", "screen-padding-tablet": "1.5rem", "space-sm": "0.75rem", "bottom-sheet-inset": "5.5rem", "space-lg": "1.25rem", "space-3xl": "3rem", "space-xl": "1.5rem", "space-xs": "0.5rem" }, "fontFamily": { "body-md": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-queue": ["Plus Jakarta Sans"], "display-queue-mobile": ["Plus Jakarta Sans"], "title-md": ["Inter"], "label-badge": ["Plus Jakarta Sans"], "body-sm": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-lg": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "display-queue": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "display-queue-mobile": ["38px", { "lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "title-md": ["16px", { "lineHeight": "22px", "fontWeight": "600" }], "label-badge": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "800" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "700" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-16 px-screen-padding-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs min-w-0 flex-1"><img alt="SPU SkipQ Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCz69Cj8om0MsUPWizEnK4u9ND35D80mSlj2WzI_k6OBqeqC6vNxylv-SE5gtrZ8JtlDLdU1sAnYOj3W6f9bUxmPMhBJparIgo3V5uO_e5kG4jnzikRGsKLASoNJEqtIHsnVOpsfSwrp1e9m7A6G2ZPH4BWoPu_7aGotgls7e6zPj0eEpC3svlT9RpK6OtzKPy7bWB6r_-jvyVaoijno10K4uldVIqk4UosTYvFqM7NtaX8UyMcBdqa6Q"><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight truncate">SPU SkipQ</span><span class="font-label-badge text-label-badge text-primary-container font-semibold uppercase px-1.5 py-0.5 rounded bg-primary-fixed">Live</span></div><button class="flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors text-left -ml-0.5" type="button"><span class="material-symbols-outlined text-[14px] text-secondary">location_on</span><span class="font-label-md text-label-md truncate text-on-surface-variant max-w-[150px]">โรงอาหาร อาคาร 5</span><span class="material-symbols-outlined text-[14px] text-outline">keyboard_arrow_down</span></button></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container active:scale-95 transition-all relative" type="button"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span></button><button aria-label="Student Profile" class="w-11 h-11 flex items-center justify-center rounded-full hover:opacity-90 active:scale-95 transition-all" type="button"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_2px_6px_rgba(0,0,0,0.08)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNucTRvI7BEjM-ySJi7UIJqb_54FwfnGSDEMSFiqXnZwaiYgQ8D6C7xRVKEnyj_ZllArlob6qo8_nMlsrm_eK2AeI9T-XVRzpNSiX_THWK_YfPzFOx0znBx1FnGJZyhzbZ_JMJKsANA-UiNb9sanL-BelEGkApvHK1NgkTXA_EJ5HgBkGYzjfTOWcngLblpEl1UHxJ_tRtP7RY_bnWDfYeGyA8bVeMTJ6dGDulX3-q6QYpewWgnrqtBw"></button></div></div></header><main class="flex flex-col relative w-full pt-16 pb-bottom-sheet-inset bg-surface flex-grow"><div class="flex flex-col w-full px-screen-padding-mobile pb-12">
+<!-- Top Personal Saving Metric / Gamification Banner -->
+<section class="mt-space-sm mb-space-md">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary-container via-primary to-secondary-container p-space-md text-on-primary shadow-[0_8px_24px_-4px_rgba(230,0,126,0.35)]">
+<div class="flex items-center justify-between gap-space-xs relative z-10">
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed">bolt</span>
+<span class="font-label-badge text-label-badge text-primary-fixed uppercase tracking-wider">สถิติความไว SPU SkipQ</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm font-bold truncate">ประหยัดเวลารอไปแล้ว 145 นาที! ⚡</h2>
+<p class="font-body-sm text-body-sm text-primary-fixed opacity-95">สั่งฉลุยผ่าน SkipQ อาคาร 5 สะสม 18 ครั้ง</p>
+</div>
+<div class="flex flex-col items-center justify-center w-14 h-14 rounded-full bg-surface-container-lowest/20 backdrop-blur-md flex-shrink-0">
+<span class="material-symbols-outlined text-[26px] text-on-primary">timer</span>
+<span class="font-label-badge text-label-badge text-on-primary font-bold -mt-0.5">Top 5%</span>
+</div>
+</div>
+<!-- Background Ambient Wave Effect -->
+<div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-surface-container-lowest/10 blur-xl pointer-events-none"></div>
+</div>
+</section>
+<!-- Page Title & Campus Segment Indicator -->
+<section class="flex items-center justify-between gap-space-xs mb-space-sm">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">ประวัติคำสั่งซื้อ</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">storefront</span>
+        จุดรับอาหารหลัก: โรงอาหาร อาคาร 5
+      </p>
+</div>
+<button class="flex items-center gap-1 px-space-xs py-1.5 rounded-full bg-surface-container-high text-on-surface hover:bg-surface-variant transition-colors" onclick="openReceiptDetail('SPU-2024-8841', '04 ป้าณี อาหารตามสั่ง', '100฿')" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">receipt_long</span>
+<span class="font-label-md text-label-md">ใบเสร็จล่าสุด</span>
+</button>
+</section>
+<!-- Filter / Segment Tabs (Filter Buttons) -->
+<section class="mb-space-md">
+<div class="flex items-center gap-space-xs overflow-x-auto py-1 no-scrollbar">
+<button class="px-space-md py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 flex-shrink-0 shadow-[0_2px_8px_rgba(230,0,126,0.25)] transition-all" id="tab-active" onclick="switchHistoryTab('active')" type="button">
+<span class="">ออเดอร์กำลังปรุง</span>
+<span class="w-5 h-5 rounded-full bg-on-primary text-primary flex items-center justify-center font-label-badge text-label-badge font-bold">1</span>
+</button>
+<button class="px-space-md py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md flex-shrink-0 hover:bg-surface-container-high transition-all" id="tab-all" onclick="switchHistoryTab('all')" type="button">
+        ทั้งหมด (19)
+      </button>
+<button class="px-space-md py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md flex-shrink-0 hover:bg-surface-container-high transition-all" id="tab-completed" onclick="switchHistoryTab('completed')" type="button">
+        สำเร็จแล้ว (17)
+      </button>
+<button class="px-space-md py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md flex-shrink-0 hover:bg-surface-container-high transition-all" id="tab-cancelled" onclick="switchHistoryTab('cancelled')" type="button">
+        ยกเลิก / คืนเงิน (1)
+      </button>
+</div>
+</section>
+<!-- Active Order Card Spotlight (Highlighted in SPU Magenta Glow) -->
+<section class="mb-space-lg" id="section-active-card">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_12px_32px_-4px_rgba(230,0,126,0.18),0_4px_12px_-2px_rgba(30,35,42,0.06)]">
+<!-- Top Accent Banner -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-primary-container to-secondary-container"></div>
+<!-- Header Row: Stall info & Live Status -->
+<div class="flex items-start justify-between gap-space-xs mb-space-xs mt-1">
+<div class="min-w-0">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+              กำลังปรุงอาหาร 🍳
+            </span>
+<span class="font-label-badge text-label-badge text-tertiary font-semibold">คาดเสร็จ 11:50 น. (~5 นาที)</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">ร้าน 04 ป้าณี อาหารตามสั่ง</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">โรงอาหาร อาคาร 5 ชั้น 1 • ช่อง Fast Track 04</p>
+</div>
+<!-- Queue Box Callout -->
+<div class="flex flex-col items-center justify-center px-3 py-1.5 rounded-lg bg-primary-fixed text-on-primary-fixed text-center flex-shrink-0">
+<span class="font-label-badge text-label-badge font-bold uppercase tracking-wider">คิวของคุณ</span>
+<span class="font-display-queue-mobile text-display-queue-mobile font-extrabold text-primary leading-none mt-0.5">A-42</span>
+</div>
+</div>
+<!-- Menu Items Summary with Food Image -->
+<div class="flex items-center gap-space-sm p-space-xs rounded-lg bg-surface-container-low mb-space-sm">
+<img class="w-16 h-16 rounded-lg object-cover flex-shrink-0" data-alt="A mouthwatering hot plate of Thai crispy fried chicken over fragrant rice served with rich creamy tom yum broth and a glossy runny sunny-side-up lava egg, vibrant food photography, Sripatum university canteen style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2a-sLFaKhp1XnDRhMQar1Dm3M-4Nb4A4h6eLJV055tjmSWzPkiPm_lzNY0259ECuhL2LZ91HxVJIUQVbl2fPv_T365gzfpt6t1YtNXKmiMdXXZ26GKk22ubBO8XAF2xBcUKOLmTq9fqqimjSvMRBok4lEd5hyiopt-0139VMPDPeeJFyZwvunzXrL0VDECdRAClxkEquOO_TU0r8VjNNtxzqnqssUcskrEUZsBRJQza7UPOGDSh-24w">
+<div class="flex flex-col min-w-0 flex-1">
+<h4 class="font-title-md text-title-md text-on-surface truncate">ข้าวมันไก่ทอดต้มยำน้ำข้น + ไข่ดาวลาวา</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">โน้ต: เผ็ดปานกลาง, น้ำซุปแยกถุง, ทานที่โรงอาหาร</p>
+<div class="flex items-center justify-between mt-1">
+<span class="font-label-md text-label-md text-primary font-bold">100฿</span>
+<span class="font-label-badge text-label-badge text-tertiary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> PromptPay ชำระแล้ว
+            </span>
+</div>
+</div>
+</div>
+<!-- Live Prep Steps Micro-indicator -->
+<div class="mb-space-md">
+<div class="flex justify-between items-center text-on-surface-variant font-label-badge text-label-badge mb-1.5">
+<span class="text-primary font-bold">1. รับออเดอร์แล้ว</span>
+<span class="text-primary font-bold">2. ป้าณีกำลังผัดกระทะ</span>
+<span class="text-outline">3. พร้อมรับ Fast Track</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden flex">
+<div class="w-2/3 h-full bg-gradient-to-r from-primary to-secondary-container rounded-full animate-pulse"></div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="h-11 flex items-center justify-center gap-1.5 rounded-full bg-surface-container-high text-on-surface font-label-lg text-label-lg active:scale-95 transition-all" onclick="showLiveTrackerSheet()" type="button">
+<span class="material-symbols-outlined text-[20px] text-primary">navigation</span>
+<span class="">ติดตามคิวสด</span>
+</button>
+<button class="h-11 flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary-container text-on-primary font-label-lg text-label-lg active:scale-95 transition-all shadow-[0_4px_12px_rgba(230,0,126,0.3)]" onclick="openPickupQrModal('A-42', 'ร้าน 04 ป้าณี อาหารตามสั่ง', 'ช่อง Fast Track 04 อาคาร 5')" type="button">
+<span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+<span class="">QR รับอาหาร</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Completed & History Order Feed -->
+<section class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">ประวัติย้อนหลัง</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">เดือนนี้ (4 รายการ)</span>
+</div>
+<!-- Order Item 1: Guay Tiew Kai Mara (Today) -->
+<div class="order-item completed-item rounded-xl bg-surface-container-lowest p-space-md shadow-[0_4px_12px_-2px_rgba(30,35,42,0.04)] transition-all">
+<div class="flex items-start justify-between gap-space-xs mb-space-xs">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary flex-shrink-0 font-headline-sm text-headline-sm font-bold">
+            02
+          </div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface font-bold truncate">ร้าน 02 เจ๊หมวย ก๋วยเตี๋ยวไก่มะระ</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant">วันนี้ • 12:15 น. (อาคาร 5)</span>
+</div>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-surface-container-low text-tertiary flex items-center gap-1 font-bold flex-shrink-0">
+<span class="material-symbols-outlined text-[14px] text-tertiary">check_circle</span> รับสำเร็จ
+        </span>
+</div>
+<div class="flex items-center gap-space-sm py-space-xs">
+<img class="w-14 h-14 rounded-lg object-cover flex-shrink-0" data-alt="Savory Thai shredded chicken egg noodles with bitter gourd and broth in a clean food canteen bowl, appetizing shallow depth of field, warm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXiI-gRHGoMU1dWPTSiflsdNBnsAnbrK-H73-2c-HbEyMxwP67594UhKLUjkWbDUUSOacfieqa_-4XewcopaPRuj4R_ucu8uSrxupLHnxaq9TWcSmwvZJBrUX6VS1ufmdxKksGp6SXoBMMkelX06p50s6YmSjPbk3YRlVeOaW3-d5jWsm0KX4pkgQu9BP5Rs2UHueva6eZZ2TqqLOE4W5Vuvrsk8oOuFxb-iz4yJi-nNGrHsEHd0gm_A">
+<div class="flex flex-col min-w-0 flex-1">
+<p class="font-body-md text-body-md text-on-surface font-medium truncate">บะหมี่ไก่ฉีกต้มยำแห้งพิเศษ x 1</p>
+<span class="font-body-sm text-body-sm text-on-surface-variant">ไม่ใส่ถั่วงอก • ชำระผ่าน PromptPay QR</span>
+<span class="font-label-md text-label-md text-on-surface font-bold mt-0.5">50฿</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-2xs">
+<button class="text-on-surface-variant hover:text-primary font-label-md text-label-md flex items-center gap-0.5 transition-colors" onclick="openReceiptDetail('SPU-2024-8799', 'ร้าน 02 เจ๊หมวย ก๋วยเตี๋ยวไก่มะระ', '50฿')" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> ดูสลิป
+        </button>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-secondary font-label-md text-label-md flex items-center gap-1 transition-colors" onclick="showFeedbackPrompt('ร้าน 02 เจ๊หมวย')" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">grade</span> รีวิว 5★
+          </button>
+<button class="px-space-md py-1.5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md active:scale-95 transition-all shadow-[0_2px_8px_rgba(230,0,126,0.2)] flex items-center gap-1" onclick="triggerFastReorder('ร้าน 02 เจ๊หมวย ก๋วยเตี๋ยวไก่มะระ', 'บะหมี่ไก่ฉีกต้มยำแห้งพิเศษ')" type="button">
+<span class="material-symbols-outlined text-[16px]">replay</span> สั่งซ้ำ
+          </button>
+</div>
+</div>
+</div>
+<!-- Order Item 2: SPU Chill Cafe (Yesterday) -->
+<div class="order-item completed-item rounded-xl bg-surface-container-lowest p-space-md shadow-[0_4px_12px_-2px_rgba(30,35,42,0.04)] transition-all">
+<div class="flex items-start justify-between gap-space-xs mb-space-xs">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-secondary flex-shrink-0 font-headline-sm text-headline-sm font-bold">
+            12
+          </div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface font-bold truncate">ร้าน 12 SPU Chill Cafe &amp; Smoothies</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant">เมื่อวาน • 14:20 น. (อาคาร 5)</span>
+</div>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-surface-container-low text-tertiary flex items-center gap-1 font-bold flex-shrink-0">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> รับสำเร็จ
+        </span>
+</div>
+<div class="flex items-center gap-space-sm py-space-xs">
+<img class="w-14 h-14 rounded-lg object-cover flex-shrink-0" data-alt="A trendy iced Thai milk tea drink with caramelized brulee torch foam topping in an eco cup, university campus cafe background, vibrant orange and cream tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnl5z5NfyfBboR_Tynfiad3_DWzV6jkx35lIiJCJ0Zzg3l-G9PVy6ltBkRUmLQOZ9r7mT1SRw-CUYvMNv-M5ouwtB0PocgDuG8GGB71TjrobjwksiapQs1i3DY5xlPSqb1vf9ZjJT2gTpGHf8SZmyRIIK-73HonEaBZTV1nuXxpjg5x8S_5lFqrDLijtugcwgfr9khCNygEb1qVT4HWkfI0RCrVipxSN21wpkn6qdvead7NZTn96fkfw">
+<div class="flex flex-col min-w-0 flex-1">
+<p class="font-body-md text-body-md text-on-surface font-medium truncate">ชาไทยเย็นพ่นไฟ หวานน้อย 25% x 1</p>
+<span class="font-body-sm text-body-sm text-on-surface-variant">ใส่แก้วเก็บความเย็น • ช่อง Fast Track บาร์น้ำ</span>
+<span class="font-label-md text-label-md text-on-surface font-bold mt-0.5">35฿</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-2xs">
+<button class="text-on-surface-variant hover:text-primary font-label-md text-label-md flex items-center gap-0.5 transition-colors" onclick="openReceiptDetail('SPU-2024-8620', 'ร้าน 12 SPU Chill Cafe', '35฿')" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> ดูสลิป
+        </button>
+<button class="px-space-md py-1.5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md active:scale-95 transition-all shadow-[0_2px_8px_rgba(230,0,126,0.2)] flex items-center gap-1" onclick="triggerFastReorder('ร้าน 12 SPU Chill Cafe', 'ชาไทยเย็นพ่นไฟ หวานน้อย')" type="button">
+<span class="material-symbols-outlined text-[16px]">replay</span> สั่งซ้ำเมนูนี้
+        </button>
+</div>
+</div>
+<!-- Order Item 3: Khao Man Gai Betong (12 Oct) -->
+<div class="order-item completed-item rounded-xl bg-surface-container-lowest p-space-md shadow-[0_4px_12px_-2px_rgba(30,35,42,0.04)] transition-all">
+<div class="flex items-start justify-between gap-space-xs mb-space-xs">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary flex-shrink-0 font-headline-sm text-headline-sm font-bold">
+            07
+          </div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface font-bold truncate">ร้าน 07 ข้าวมันไก่ตอน สูตรเบตง</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant">12 ต.ค. • 11:40 น. (อาคาร 5)</span>
+</div>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-surface-container-low text-tertiary flex items-center gap-1 font-bold flex-shrink-0">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> รับสำเร็จ
+        </span>
+</div>
+<div class="flex items-center gap-space-sm py-space-xs">
+<img class="w-14 h-14 rounded-lg object-cover flex-shrink-0" data-alt="Hainanese style mixed boiled and golden fried chicken over fragrant seasoned rice with cucumber and ginger soy dipping sauce in Sripatum canteen setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsdJloAg5w27JzCtBxi3Erwb3tlbGx4Hs7AzCaY1d8z_slK2H7ROwh84CleP8pz52HulmSe3xVFdJjxDAHaQnOrOeTGPm9YT_yJUNkCnQ7MlVfIz_ogYMAmfCyTs4_nzkBgdITZW7V3Ihp-yxF3x9Ke3e8fsRu_k5zuxEIWOUmnBGHov08mPGIieUQyiNrYZ1y7mZLz8ADLmceOsx9yWfTMgn8Zr190g0lkaAX6aIDLDu5Ir_KVBBWnw">
+<div class="flex flex-col min-w-0 flex-1">
+<p class="font-body-md text-body-md text-on-surface font-medium truncate">ข้าวมันไก่ผสม (ต้ม+ทอด) x 1</p>
+<span class="font-body-sm text-body-sm text-on-surface-variant">น้ำจิ้มเบตงเพิ่มพริก • ทานที่โต๊ะ</span>
+<span class="font-label-md text-label-md text-on-surface font-bold mt-0.5">50฿</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-2xs">
+<button class="text-on-surface-variant hover:text-primary font-label-md text-label-md flex items-center gap-0.5 transition-colors" onclick="openReceiptDetail('SPU-2024-8411', 'ร้าน 07 ข้าวมันไก่ตอน', '50฿')" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> ดูสลิป
+        </button>
+<button class="px-space-md py-1.5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md active:scale-95 transition-all shadow-[0_2px_8px_rgba(230,0,126,0.2)] flex items-center gap-1" onclick="triggerFastReorder('ร้าน 07 ข้าวมันไก่ตอน สูตรเบตง', 'ข้าวมันไก่ผสม')" type="button">
+<span class="material-symbols-outlined text-[16px]">replay</span> สั่งซ้ำ
+        </button>
+</div>
+</div>
+<!-- Order Item 4: Cancelled / Refunded Sample (10 Oct) -->
+<div class="order-item cancelled-item rounded-xl bg-surface-container-lowest p-space-md shadow-[0_4px_12px_-2px_rgba(30,35,42,0.04)] transition-all">
+<div class="flex items-start justify-between gap-space-xs mb-space-xs">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-outline flex-shrink-0 font-headline-sm text-headline-sm font-bold">
+            09
+          </div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface font-bold truncate">ร้าน 09 ป้าสมศรี อาหารตามสั่ง</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant">10 ต.ค. • 11:30 น. (อาคาร 5)</span>
+</div>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-error-container text-on-error-container flex items-center gap-1 font-bold flex-shrink-0">
+<span class="material-symbols-outlined text-[14px]">history</span> ยกเลิกแล้ว
+        </span>
+</div>
+<div class="flex items-center gap-space-sm py-space-xs opacity-75">
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center text-outline flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">cancel</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<p class="font-body-md text-body-md text-on-surface font-medium truncate">ข้าวไข่ข้นกุ้งกระเทียมพริกไทย x 1</p>
+<span class="font-body-sm text-body-sm text-secondary font-medium">สาเหตุ: วัตถุดิบหมดช่วงเที่ยง</span>
+<span class="font-label-md text-label-md text-on-surface font-bold mt-0.5">65฿</span>
+</div>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm mt-space-2xs">
+<div class="flex items-center gap-1 text-tertiary font-medium">
+<span class="material-symbols-outlined text-[16px]">currency_exchange</span>
+<span class="">คืนเงินเข้า PromptPay แล้ว (+65฿)</span>
+</div>
+<button class="font-label-md text-label-md text-primary font-bold hover:underline" onclick="openReceiptDetail('SPU-2024-8119', 'ร้าน 09 ป้าสมศรี', '65฿ (คืนเงินสำเร็จ)')" type="button">
+          ดูสลิปคืนเงิน
+        </button>
+</div>
+</div>
+</section>
+<!-- Reorder Floating Toast / Confirmation Snack (Triggered via JS) -->
+<div class="fixed top-20 inset-x-4 z-50 transform -translate-y-24 opacity-0 pointer-events-none transition-all duration-300 flex justify-center" id="toast-reorder">
+<div class="px-space-md py- space-sm rounded-full bg-inverse-surface text-inverse-on-surface shadow-[0_12px_28px_rgba(0,0,0,0.25)] flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-tertiary-fixed">add_shopping_cart</span>
+<span class="font-label-md text-label-md" id="toast-text">เพิ่มลงตะกร้าด่วนแล้ว!</span>
+</div>
+</div>
+<!-- Digital Receipt & Order Detail Modal -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-sm hidden items-end justify-center p-0 transition-opacity" id="receipt-modal">
+<div class="w-full max-w-lg bg-surface-container-lowest rounded-t-3xl p-space-lg shadow-2xl flex flex-col gap-space-sm transform transition-transform animate-in duration-300">
+<!-- Handle Bar -->
+<div class="w-12 h-1.5 rounded-full bg-surface-variant mx-auto mb-1"></div>
+<!-- Modal Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">ใบเสร็จดิจิทัล (E-Receipt)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant" id="receipt-order-id">รหัส: #SPU-2024-8841</p>
+</div>
+</div>
+<button class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-variant" onclick="closeReceiptModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Receipt Content Card -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-xs text-on-surface font-body-sm text-body-sm">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">ร้านค้า</span>
+<span class="font-title-md text-title-md font-bold text-right" id="receipt-shop-name">04 ป้าณี อาหารตามสั่ง</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">จุดรับอาหาร</span>
+<span class="font-medium text-right text-secondary">ช่อง SkipQ Fast Track • อาคาร 5 ชั้น 1</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">รูปแบบบริการ</span>
+<span class="font-medium">ทานที่โรงอาหาร อาคาร 5</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">เวลาที่สั่งซื้อ</span>
+<span class="font-medium">11:42:15 น. (วันนี้)</span>
+</div>
+<div class="my-space-2xs border-t border-dashed border-outline-variant/50 pt-space-xs flex flex-col gap-1">
+<div class="flex justify-between items-center text-body-md font-body-md">
+<span class="">ข้าวมันไก่ทอดต้มยำน้ำข้น + ไข่ดาวลาวา x 1</span>
+<span class="font-bold">110฿</span>
+</div>
+<div class="flex justify-between items-center text-primary font-bold">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">high_res</span>
+              SPU Student Pass ส่วนลดมื้อเที่ยง
+            </span>
+<span class="">-10฿</span>
+</div>
+</div>
+<div class="border-t border-outline-variant/30 pt-space-xs flex justify-between items-center font-headline-sm text-headline-sm font-bold text-on-surface">
+<span class="">ยอดสุทธิที่ชำระ</span>
+<span class="text-primary" id="receipt-total-price">100฿</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant text-body-sm">
+<span class="">ช่องทางชำระเงิน</span>
+<span class="flex items-center gap-1 text-tertiary font-medium">
+<span class="material-symbols-outlined text-[16px]">qr_code</span> PromptPay QR (SCB App)
+          </span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button class="h-12 rounded-full bg-surface-container-high text-on-surface font-label-lg text-label-lg flex items-center justify-center gap-1.5 active:scale-95 transition-all" onclick="triggerDownloadSlip()" type="button">
+<span class="material-symbols-outlined text-[20px] text-tertiary">download</span>
+<span class="">บันทึกรูปสลิป</span>
+</button>
+<button class="h-12 rounded-full bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-[0_4px_12px_rgba(230,0,126,0.3)]" onclick="closeReceiptModal()" type="button">
+<span class="">ปิดหน้าต่าง</span>
+</button>
+</div>
+</div>
+</div>
+<!-- QR Fast Track Pickup Pass Modal -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/75 backdrop-blur-md hidden items-center justify-center p-space-md" id="pickup-qr-modal">
+<div class="w-full max-w-sm bg-surface-container-lowest rounded-3xl p-space-lg shadow-2xl flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center mb-space-xs">
+<span class="material-symbols-outlined text-[28px]">qr_code_scanner</span>
+</div>
+<span class="font-label-badge text-label-badge uppercase tracking-wider text-secondary font-bold">บัตรคิวดิจิทัล Fast Track</span>
+<h3 class="font-display-queue-mobile text-display-queue-mobile font-black text-primary my-1" id="qr-modal-queue">A-42</h3>
+<p class="font-title-md text-title-md text-on-surface font-bold" id="qr-modal-shop">ร้าน 04 ป้าณี อาหารตามสั่ง</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md" id="qr-modal-desc">สแกนที่เคาน์เตอร์ช่อง 04 โรงอาหาร อาคาร 5</p>
+<!-- Simulated SVG QR Code -->
+<div class="p-3 bg-surface-container-lowest rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.08)] mb-space-md flex flex-col items-center">
+<svg class="w-44 h-44 text-on-surface" fill="currentColor" viewBox="0 0 100 100">
+<!-- Stylized QR Code Shapes -->
+<rect fill="currentColor" height="26" rx="4" width="26" x="5" y="5"></rect>
+<rect fill="#fff" height="18" rx="2" width="18" x="9" y="9"></rect>
+<rect fill="currentColor" height="10" width="10" x="13" y="13"></rect>
+<rect fill="currentColor" height="26" rx="4" width="26" x="69" y="5"></rect>
+<rect fill="#fff" height="18" rx="2" width="18" x="73" y="9"></rect>
+<rect fill="currentColor" height="10" width="10" x="77" y="13"></rect>
+<rect fill="currentColor" height="26" rx="4" width="26" x="5" y="69"></rect>
+<rect fill="#fff" height="18" rx="2" width="18" x="9" y="73"></rect>
+<rect fill="currentColor" height="10" width="10" x="13" y="77"></rect>
+<!-- Pixel Matrix Details -->
+<rect fill="#e6007e" height="8" rx="1" width="8" x="36" y="8"></rect>
+<rect fill="currentColor" height="6" width="6" x="48" y="14"></rect>
+<rect fill="currentColor" height="6" width="6" x="58" y="8"></rect>
+<rect fill="currentColor" height="6" width="6" x="36" y="24"></rect>
+<rect fill="#fd5835" height="8" width="8" x="46" y="24"></rect>
+<rect fill="currentColor" height="6" width="6" x="58" y="22"></rect>
+<rect fill="currentColor" height="6" width="6" x="10" y="38"></rect>
+<rect fill="#e6007e" height="6" width="6" x="22" y="44"></rect>
+<rect fill="currentColor" height="12" rx="2" width="12" x="34" y="38"></rect>
+<rect fill="currentColor" height="8" width="8" x="52" y="40"></rect>
+<rect fill="#fd5835" height="6" width="6" x="66" y="38"></rect>
+<rect fill="currentColor" height="6" width="12" x="78" y="44"></rect>
+<rect fill="currentColor" height="6" width="6" x="38" y="56"></rect>
+<rect fill="#e6007e" height="6" width="6" x="48" y="56"></rect>
+<rect fill="currentColor" height="6" width="12" x="60" y="56"></rect>
+<rect fill="currentColor" height="6" width="6" x="78" y="56"></rect>
+<rect fill="currentColor" height="10" rx="1" width="10" x="38" y="68"></rect>
+<rect fill="currentColor" height="8" width="8" x="54" y="70"></rect>
+<rect fill="#e6007e" height="6" width="6" x="68" y="68"></rect>
+<rect fill="currentColor" height="10" width="10" x="80" y="72"></rect>
+<rect fill="currentColor" height="8" width="8" x="48" y="84"></rect>
+<rect fill="currentColor" height="6" width="12" x="62" y="82"></rect>
+<rect fill="#fd5835" height="6" width="6" x="78" y="86"></rect>
+</svg>
+<span class="font-label-badge text-label-badge text-on-surface-variant mt-2 font-mono">TOKEN: SPU-Q-A42-BLDG5</span>
+</div>
+<button class="w-full h-12 rounded-full bg-surface-container-high text-on-surface font-label-lg text-label-lg active:scale-95 transition-all" onclick="closePickupQrModal()" type="button">
+        ปิดหน้าต่าง QR
+      </button>
+</div>
+</div>
+</div>
+<script>
+  function switchHistoryTab(tabType) {
+    const activeBtn = document.getElementById('tab-active');
+    const allBtn = document.getElementById('tab-all');
+    const completedBtn = document.getElementById('tab-completed');
+    const cancelledBtn = document.getElementById('tab-cancelled');
+
+    const activeCard = document.getElementById('section-active-card');
+    const completedItems = document.querySelectorAll('.completed-item');
+    const cancelledItems = document.querySelectorAll('.cancelled-item');
+
+    const resetStyles = (el) => {
+      el.className = 'px-space-md py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md flex-shrink-0 hover:bg-surface-container-high transition-all';
+    };
+    const setActiveStyle = (el) => {
+      el.className = 'px-space-md py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md flex-shrink-0 shadow-[0_2px_8px_rgba(230,0,126,0.25)] transition-all';
+    };
+
+    [activeBtn, allBtn, completedBtn, cancelledBtn].forEach(resetStyles);
+
+    if (tabType === 'active') {
+      setActiveStyle(activeBtn);
+      activeCard.style.display = 'block';
+      completedItems.forEach(item => item.style.display = 'none');
+      cancelledItems.forEach(item => item.style.display = 'none');
+    } else if (tabType === 'completed') {
+      setActiveStyle(completedBtn);
+      activeCard.style.display = 'none';
+      completedItems.forEach(item => item.style.display = 'block');
+      cancelledItems.forEach(item => item.style.display = 'none');
+    } else if (tabType === 'cancelled') {
+      setActiveStyle(cancelledBtn);
+      activeCard.style.display = 'none';
+      completedItems.forEach(item => item.style.display = 'none');
+      cancelledItems.forEach(item => item.style.display = 'block');
+    } else {
+      setActiveStyle(allBtn);
+      activeCard.style.display = 'block';
+      completedItems.forEach(item => item.style.display = 'block');
+      cancelledItems.forEach(item => item.style.display = 'block');
+    }
+  }
+
+  function triggerFastReorder(shopName, dishName) {
+    const toast = document.getElementById('toast-reorder');
+    const toastText = document.getElementById('toast-text');
+    toastText.innerText = `เพิ่ม "${dishName}" ลงตะกร้าแล้ว! 🍱`;
+    
+    toast.classList.remove('opacity-0', '-translate-y-24', 'pointer-events-none');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    setTimeout(() => {
+      toast.classList.add('opacity-0', '-translate-y-24', 'pointer-events-none');
+      toast.classList.remove('opacity-100', 'translate-y-0');
+    }, 2400);
+  }
+
+  function showFeedbackPrompt(shop) {
+    const toast = document.getElementById('toast-reorder');
+    const toastText = document.getElementById('toast-text');
+    toastText.innerText = `ขอบคุณที่ให้คะแนน 5 ดาวกับ ${shop} ⭐️`;
+    
+    toast.classList.remove('opacity-0', '-translate-y-24', 'pointer-events-none');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    setTimeout(() => {
+      toast.classList.add('opacity-0', '-translate-y-24', 'pointer-events-none');
+      toast.classList.remove('opacity-100', 'translate-y-0');
+    }, 2200);
+  }
+
+  function openReceiptDetail(orderId, shopName, price) {
+    document.getElementById('receipt-order-id').innerText = 'รหัส: #' + orderId;
+    document.getElementById('receipt-shop-name').innerText = shopName;
+    document.getElementById('receipt-total-price').innerText = price;
+    const modal = document.getElementById('receipt-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeReceiptModal() {
+    const modal = document.getElementById('receipt-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function openPickupQrModal(queueNum, shopName, desc) {
+    document.getElementById('qr-modal-queue').innerText = queueNum;
+    document.getElementById('qr-modal-shop').innerText = shopName;
+    document.getElementById('qr-modal-desc').innerText = desc;
+    const modal = document.getElementById('pickup-qr-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closePickupQrModal() {
+    const modal = document.getElementById('pickup-qr-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function showLiveTrackerSheet() {
+    openPickupQrModal('A-42', 'ร้าน 04 ป้าณี (กำลังผัดกระทะ)', 'เหลืออีก 1 คิวก่อนหน้า • พร้อมรับ ~11:50 น.');
+  }
+
+  function triggerDownloadSlip() {
+    const toast = document.getElementById('toast-reorder');
+    const toastText = document.getElementById('toast-text');
+    toastText.innerText = 'บันทึกรูปภาพใบเสร็จลงเครื่องเรียบร้อย 📲';
+    
+    toast.classList.remove('opacity-0', '-translate-y-24', 'pointer-events-none');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    setTimeout(() => {
+      toast.classList.add('opacity-0', '-translate-y-24', 'pointer-events-none');
+      toast.classList.remove('opacity-100', 'translate-y-0');
+      closeReceiptModal();
+    }, 1800);
+  }
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-4px_16px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-12 text-on-surface-variant transition-colors" data-path="home" href="#"><span class="material-symbols-outlined text-[24px]">restaurant</span><span class="font-label-md text-label-md truncate">หน้าหลัก</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-12 text-on-surface-variant transition-colors" data-path="menu-assistant" href="#"><span class="material-symbols-outlined text-[24px]">casino</span><span class="font-label-md text-label-md truncate">สุ่มเมนู</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-12 text-on-surface-variant transition-colors relative" data-path="my-queue" href="#"><div class="relative flex items-center justify-center"><span class="material-symbols-outlined text-[24px]">confirmation_number</span><span class="absolute -top-1 -right-2.5 px-1 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-primary-container text-on-primary font-label-badge text-label-badge">1</span></div><span class="font-label-md text-label-md truncate">คิวของฉัน</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-12 transition-colors text-primary font-bold" data-path="history" href="#"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="font-label-md text-label-md truncate">ประวัติการสั่ง</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-12 text-on-surface-variant transition-colors" data-path="student-profile" href="#"><span class="material-symbols-outlined text-[24px]">person</span><span class="font-label-md text-label-md truncate">โปรไฟล์</span></a></div></nav>
+
+
+
+</body></html>
