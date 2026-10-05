@@ -1,11 +1,18 @@
-import { Mail, Phone, IdCard, Heart, Bell, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { Mail, Phone, IdCard, Heart, Bell, LayoutDashboard, ShieldCheck, Clock, Receipt } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { Menu } from "@/models/Menu";
+import { listOrdersForUser } from "@/services/order.service";
 import { NotificationToggle } from "@/components/profile/notification-toggle";
+import { ChangePasswordDialog } from "@/components/profile/change-password-dialog";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { OrderCard } from "@/components/order/order-card";
+
+export const dynamic = "force-dynamic";
+
+const ACTIVE_STATUSES = ["ORDER_RECEIVED", "PREPARING", "READY_FOR_PICKUP"];
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -15,9 +22,15 @@ export default async function ProfilePage() {
   const user = await User.findById(session.user.id);
   if (!user) return null;
 
-  const favorites = user.favoriteMenuIds.length
-    ? await Menu.find({ _id: { $in: user.favoriteMenuIds } }).limit(5)
-    : [];
+  const [favorites, orders] = await Promise.all([
+    user.favoriteMenuIds.length
+      ? Menu.find({ _id: { $in: user.favoriteMenuIds } }).limit(5)
+      : Promise.resolve([]),
+    listOrdersForUser(session.user.id),
+  ]);
+
+  const activeOrders = orders.filter((o) => ACTIVE_STATUSES.includes(o.status));
+  const historyOrders = orders.filter((o) => !ACTIVE_STATUSES.includes(o.status)).slice(0, 3);
 
   return (
     <div className="flex flex-col gap-6 px-4 py-4">
@@ -41,18 +54,56 @@ export default async function ProfilePage() {
         </Link>
       )}
 
+      {activeOrders.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+            <Clock size={14} /> กำลังดำเนินการ
+          </h2>
+          <div className="flex flex-col gap-2">
+            {activeOrders.map((order) => (
+              <OrderCard key={order.id} order={order} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+            <Receipt size={14} /> ประวัติการสั่งซื้อ
+          </h2>
+          {orders.length > historyOrders.length + activeOrders.length && (
+            <Link href="/orders" className="text-xs font-semibold text-primary">
+              ดูทั้งหมด →
+            </Link>
+          )}
+        </div>
+        {historyOrders.length === 0 ? (
+          <p className="text-sm text-muted-foreground py-4 text-center">ยังไม่มีประวัติการสั่งซื้อ</p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {historyOrders.map((order) => (
+              <OrderCard key={order.id} order={order} />
+            ))}
+          </div>
+        )}
+      </section>
+
       <section className="flex flex-col gap-1 bg-card border border-border rounded-xl divide-y divide-border">
         <InfoRow icon={Mail} label="อีเมล" value={user.email} />
         {user.studentId && <InfoRow icon={IdCard} label="รหัสนักศึกษา/พนักงาน" value={user.studentId} />}
         {user.phone && <InfoRow icon={Phone} label="เบอร์โทร" value={user.phone} />}
       </section>
 
-      <section className="flex items-center justify-between bg-card border border-border rounded-xl px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Bell size={18} className="text-muted-foreground" />
-          <span className="text-sm font-semibold text-foreground">การแจ้งเตือน</span>
+      <section className="flex flex-col bg-card border border-border rounded-xl divide-y divide-border overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Bell size={18} className="text-muted-foreground" />
+            <span className="text-sm font-semibold text-foreground">การแจ้งเตือน</span>
+          </div>
+          <NotificationToggle initialEnabled={user.notificationsEnabled} />
         </div>
-        <NotificationToggle initialEnabled={user.notificationsEnabled} />
+        <ChangePasswordDialog />
       </section>
 
       <section className="flex flex-col gap-2">

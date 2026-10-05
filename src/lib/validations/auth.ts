@@ -27,3 +27,10 @@ export const registerSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "กรุณากรอกรหัสผ่านปัจจุบัน"),
+  newPassword: z.string().min(8, "รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัวอักษร"),
+});
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
