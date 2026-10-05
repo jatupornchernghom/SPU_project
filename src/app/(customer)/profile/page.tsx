@@ -30,7 +30,8 @@ export default async function ProfilePage() {
   ]);
 
   const activeOrders = orders.filter((o) => ACTIVE_STATUSES.includes(o.status));
-  const historyOrders = orders.filter((o) => !ACTIVE_STATUSES.includes(o.status)).slice(0, 3);
+  const completedOrders = orders.filter((o) => o.status === "COMPLETED");
+  const historyOrders = completedOrders.slice(0, 3);
 
   return (
     <div className="flex flex-col gap-6 px-4 py-4">
@@ -72,8 +73,8 @@ export default async function ProfilePage() {
           <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
             <Receipt size={14} /> ประวัติการสั่งซื้อ
           </h2>
-          {orders.length > historyOrders.length + activeOrders.length && (
-            <Link href="/orders" className="text-xs font-semibold text-primary">
+          {completedOrders.length > historyOrders.length && (
+            <Link href="/orders/history" className="text-xs font-semibold text-primary">
               ดูทั้งหมด →
             </Link>
           )}

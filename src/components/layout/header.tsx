@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bell, UtensilsCrossed } from "lucide-react";
+import { DesktopNav } from "@/components/layout/desktop-nav";
 
 export function Header({
   userName,
@@ -24,6 +25,9 @@ export function Header({
             </div>
           </div>
         </Link>
+        <div className="hidden md:flex flex-1 justify-center">
+          <DesktopNav />
+        </div>
         <div className="flex items-center gap-1 flex-shrink-0">
           <Link
             href="/notifications"

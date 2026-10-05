@@ -3,15 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "cn";
-import { Utensils, Dices, Ticket, Receipt, User } from "lucide-react";
-
-const ITEMS = [
-  { href: "/", label: "หน้าหลัก", icon: Utensils },
-  { href: "/random", label: "สุ่มเมนู", icon: Dices },
-  { href: "/orders", label: "คิวของฉัน", icon: Ticket },
-  { href: "/orders?tab=history", label: "ประวัติ", icon: Receipt },
-  { href: "/profile", label: "โปรไฟล์", icon: User },
-];
+import { CUSTOMER_NAV_ITEMS, isNavItemActive } from "@/lib/nav-items";
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -19,8 +11,8 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 pb-safe bg-background/90 backdrop-blur-xl border-t border-border md:hidden">
       <div className="flex justify-around items-center h-16 px-2">
-        {ITEMS.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href.split("?")[0]);
+        {CUSTOMER_NAV_ITEMS.map((item) => {
+          const active = isNavItemActive(pathname, item.href);
           const Icon = item.icon;
           return (
             <Link
