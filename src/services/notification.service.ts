@@ -30,3 +30,11 @@ export async function notify(userId: string, orderId: string, type: Notification
     message: script.message,
   });
 }
+
+export async function countUnreadNotifications(userId: string) {
+  return Notification.countDocuments({ userId, isRead: false });
+}
+
+export async function markAllNotificationsRead(userId: string) {
+  await Notification.updateMany({ userId, isRead: false }, { isRead: true });
+}

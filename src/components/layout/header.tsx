@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { Bell, UtensilsCrossed } from "lucide-react";
 
-export function Header({ userName }: { userName?: string | null }) {
+export function Header({
+  userName,
+  unreadCount = 0,
+}: {
+  userName?: string | null;
+  unreadCount?: number;
+}) {
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-background/85 backdrop-blur-xl border-b border-border pt-safe">
       <div className="h-16 px-4 flex items-center justify-between gap-2 max-w-5xl mx-auto">
@@ -22,9 +28,14 @@ export function Header({ userName }: { userName?: string | null }) {
           <Link
             href="/notifications"
             aria-label="Notifications"
-            className="w-11 h-11 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted active:scale-95 transition-all"
+            className="relative w-11 h-11 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted active:scale-95 transition-all"
           >
             <Bell size={22} />
+            {unreadCount > 0 && (
+              <span className="absolute top-2 right-2 min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
           </Link>
           <Link
             href="/profile"

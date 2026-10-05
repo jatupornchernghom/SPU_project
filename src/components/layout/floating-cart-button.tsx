@@ -17,10 +17,10 @@ export function FloatingCartButton() {
   if (items.length === 0 || HIDDEN_ON.some((p) => pathname.startsWith(p))) return null;
 
   return (
-    <div className="fixed left-0 right-0 z-40 px-4 bottom-20 md:bottom-6 flex justify-center">
+    <div className="fixed left-0 right-0 z-40 px-4 bottom-20 md:bottom-6 flex justify-center pointer-events-none">
       <Link
         href="/cart"
-        className="w-full max-w-md flex items-center justify-between gap-3 rounded-2xl bg-foreground text-background px-4 py-3 shadow-lg active:scale-[0.98] transition-transform"
+        className="pointer-events-auto w-full max-w-md flex items-center justify-between gap-3 rounded-2xl bg-foreground text-background px-4 py-3 shadow-lg active:scale-[0.98] transition-transform"
       >
         <div className="flex items-center gap-3 min-w-0">
           <div className="relative flex-shrink-0">

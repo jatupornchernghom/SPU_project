@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, ChefHat, PackageCheck, ScanLine, Wallet } from "lucide-react";
+import { Bell, CheckCircle2, ChefHat, PackageCheck, ScanLine, Wallet } from "lucide-react";
 import { useRestaurantStream } from "@/hooks/use-restaurant-stream";
 import { StatusBadge } from "@/components/queue/status-badge";
 import { Button } from "@/components/ui/button";
@@ -28,8 +28,16 @@ export function DashboardBoard({
   const [pickupCode, setPickupCode] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
+  const knownOrderIds = useRef(new Set(initialOrders.map((o) => o.id)));
 
   useRestaurantStream(restaurantId, (updated) => {
+    if (!knownOrderIds.current.has(updated.id) && ACTIVE_STATUSES.includes(updated.status)) {
+      knownOrderIds.current.add(updated.id);
+      toast(`มีออเดอร์ใหม่เข้ามา! คิว ${updated.queueNumber}`, {
+        description: updated.items.map((i) => `${i.name} x${i.quantity}`).join(", "),
+        icon: <Bell size={16} />,
+      });
+    }
     setOrders((prev) => {
       const exists = prev.some((o) => o.id === updated.id);
       return exists ? prev.map((o) => (o.id === updated.id ? updated : o)) : [updated, ...prev];
@@ -42,6 +50,15 @@ export function DashboardBoard({
         .filter((o) => ACTIVE_STATUSES.includes(o.status))
         .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
     [orders]
+  );
+
+  const pendingPaymentOrders = useMemo(
+    () => activeOrders.filter((o) => o.paymentStatus === "PENDING"),
+    [activeOrders]
+  );
+  const inProgressOrders = useMemo(
+    () => activeOrders.filter((o) => o.paymentStatus !== "PENDING"),
+    [activeOrders]
   );
 
   async function advanceStatus(orderId: string, nextStatus: OrderStatus) {
@@ -67,7 +84,7 @@ export function DashboardBoard({
         toast.error(data.error ?? "เกิดข้อผิดพลาด");
         return;
       }
-      toast.success("ยืนยันรับยอดแล้ว");
+      toast.success(`ยืนยันรับยอดคิว ${data.order.queueNumber} แล้ว — เริ่มปรุงได้เลย`);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? data.order : o)));
     } finally {
       setConfirmingPaymentId(null);
@@ -116,82 +133,90 @@ export function DashboardBoard({
         </form>
       </section>
 
+      {pendingPaymentOrders.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-bold text-status-waiting-fg uppercase tracking-wide">
+            รอยืนยันยอดชำระเงิน ({pendingPaymentOrders.length})
+          </h2>
+          <div className="flex flex-col gap-2">
+            {pendingPaymentOrders.map((order) => (
+              <div
+                key={order.id}
+                className="bg-status-waiting-bg border-2 border-status-waiting-fg/30 rounded-xl p-3 flex items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-12 h-12 rounded-lg bg-card text-status-waiting-fg flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
+                    {order.queueNumber}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-foreground truncate">
+                      {order.items.map((i) => `${i.name} x${i.quantity}`).join(", ")}
+                    </p>
+                    <p className="text-xs text-status-waiting-fg font-medium">
+                      {order.orderNumber} • QR พร้อมเพย์ • ฿{order.total}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  disabled={confirmingPaymentId === order.id}
+                  onClick={() => handleConfirmPayment(order.id)}
+                  className="h-9 rounded-full gap-1 flex-shrink-0"
+                >
+                  <Wallet size={14} />
+                  ยืนยันรับยอด
+                </Button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide">
-          คิวออเดอร์ ({activeOrders.length})
+          คิวออเดอร์ ({inProgressOrders.length})
         </h2>
 
-        {activeOrders.length === 0 ? (
+        {inProgressOrders.length === 0 ? (
           <p className="text-sm text-muted-foreground py-10 text-center">ยังไม่มีออเดอร์เข้ามา</p>
         ) : (
           <div className="flex flex-col gap-2">
-            {activeOrders.map((order) => {
+            {inProgressOrders.map((order) => {
               const action = NEXT_ACTION[order.status];
               const Icon = action?.icon;
-              const paymentPending = order.paymentStatus === "PENDING";
 
               return (
                 <div
                   key={order.id}
-                  className="bg-card border border-border rounded-xl p-3 flex flex-col gap-2"
+                  className="bg-card border border-border rounded-xl p-3 flex items-center justify-between gap-3"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
-                        {order.queueNumber}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-foreground truncate">
-                          {order.items.map((i) => `${i.name} x${i.quantity}`).join(", ")}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {order.orderNumber} • รับเวลา{" "}
-                          {order.pickupTime === "ASAP" ? "เร็วที่สุด" : order.pickupTime} • ฿{order.total}
-                        </p>
-                      </div>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
+                      {order.queueNumber}
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <StatusBadge status={order.status} />
-                      {action &&
-                        (paymentPending && action.next === "PREPARING" ? (
-                          <Button
-                            size="sm"
-                            disabled
-                            className="h-9 rounded-full gap-1 opacity-50 cursor-not-allowed"
-                          >
-                            {Icon && <Icon size={14} />}
-                            {action.label}
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={() => advanceStatus(order.id, action.next)}
-                            className="h-9 rounded-full gap-1"
-                          >
-                            {Icon && <Icon size={14} />}
-                            {action.label}
-                          </Button>
-                        ))}
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-foreground truncate">
+                        {order.items.map((i) => `${i.name} x${i.quantity}`).join(", ")}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {order.orderNumber} • รับเวลา{" "}
+                        {order.pickupTime === "ASAP" ? "เร็วที่สุด" : order.pickupTime} • ฿{order.total}
+                      </p>
                     </div>
                   </div>
-
-                  {paymentPending && (
-                    <div className="flex items-center justify-between gap-2 rounded-lg bg-status-waiting-bg px-3 py-2">
-                      <span className="text-xs font-semibold text-status-waiting-fg">
-                        รอยืนยันยอดโอน QR พร้อมเพย์
-                      </span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <StatusBadge status={order.status} />
+                    {action && (
                       <Button
                         size="sm"
-                        variant="outline"
-                        disabled={confirmingPaymentId === order.id}
-                        onClick={() => handleConfirmPayment(order.id)}
-                        className="h-8 rounded-full gap-1 bg-card"
+                        onClick={() => advanceStatus(order.id, action.next)}
+                        className="h-9 rounded-full gap-1"
                       >
-                        <Wallet size={13} />
-                        ยืนยันรับยอด
+                        {Icon && <Icon size={14} />}
+                        {action.label}
                       </Button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               );
             })}

@@ -43,6 +43,10 @@ export async function GET(_request: Request, { params }: Params) {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache, no-transform",
         Connection: "keep-alive",
+        // Tell nginx-style reverse proxies (common in front of hosts like
+        // Render) not to buffer this response — otherwise live events can
+        // sit in a proxy buffer instead of reaching the client immediately.
+        "X-Accel-Buffering": "no",
       },
     });
   } catch (error) {

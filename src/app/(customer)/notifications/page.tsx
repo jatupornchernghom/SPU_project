@@ -4,6 +4,9 @@ import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Notification } from "@/models/Notification";
 import { serializeNotification } from "@/lib/serialize";
+import { markAllNotificationsRead } from "@/services/notification.service";
+
+export const dynamic = "force-dynamic";
 
 export default async function NotificationsPage() {
   const session = await auth();
@@ -15,6 +18,10 @@ export default async function NotificationsPage() {
     .limit(50);
 
   const serialized = notifications.map(serializeNotification);
+
+  // Render with the as-fetched isRead state (so a just-arrived notification
+  // still shows as unread on this visit), then clear it for next time.
+  await markAllNotificationsRead(session.user.id);
 
   return (
     <div className="flex flex-col gap-3 px-4 py-4">

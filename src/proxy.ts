@@ -5,6 +5,12 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const role = req.auth?.user?.role;
 
+  // Restaurant staff land on their order queue instead of the customer
+  // browse/order home page.
+  if (pathname === "/" && role === "RESTAURANT_STAFF") {
+    return NextResponse.redirect(new URL("/restaurant/dashboard", req.nextUrl));
+  }
+
   const isAdminRoute = pathname.startsWith("/admin");
   const isRestaurantStaffRoute = pathname.startsWith("/restaurant/dashboard");
 
@@ -30,5 +36,13 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/restaurant/dashboard/:path*", "/cart", "/checkout/:path*", "/orders/:path*", "/profile/:path*"],
+  matcher: [
+    "/",
+    "/admin/:path*",
+    "/restaurant/dashboard/:path*",
+    "/cart",
+    "/checkout/:path*",
+    "/orders/:path*",
+    "/profile/:path*",
+  ],
 };
