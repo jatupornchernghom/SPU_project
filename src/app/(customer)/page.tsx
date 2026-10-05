@@ -1,9 +1,13 @@
 import Link from "next/link";
-import { Dices, Search, Sparkles } from "lucide-react";
+import { ChevronRight, Dices, Search, Sparkles } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { listRestaurants, getPopularMenu } from "@/services/restaurant.service";
+import { listOrdersForUser } from "@/services/order.service";
 import { StallCard } from "@/components/restaurant/stall-card";
 import { DishCard } from "@/components/menu/dish-card";
+import { ORDER_STATUS_LABEL } from "@/lib/status";
+
+const ACTIVE_STATUSES = ["ORDER_RECEIVED", "PREPARING", "READY_FOR_PICKUP"];
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
@@ -12,7 +16,12 @@ type Props = {
 export default async function HomePage({ searchParams }: Props) {
   const { q } = await searchParams;
   const session = await auth();
-  const [restaurants, popularMenu] = await Promise.all([listRestaurants(), getPopularMenu()]);
+  const [restaurants, popularMenu, myOrders] = await Promise.all([
+    listRestaurants(),
+    getPopularMenu(),
+    session?.user ? listOrdersForUser(session.user.id) : Promise.resolve([]),
+  ]);
+  const activeOrder = myOrders.find((o) => ACTIVE_STATUSES.includes(o.status));
 
   const query = q?.trim().toLowerCase();
   const filteredRestaurants = query
@@ -45,6 +54,44 @@ export default async function HomePage({ searchParams }: Props) {
           />
         </form>
       </section>
+
+      {!query && activeOrder && (
+        <section className="px-4 pb-3">
+          <Link
+            href={`/orders/${activeOrder.id}`}
+            className="relative overflow-hidden rounded-xl bg-foreground text-background p-3 flex items-center justify-between gap-3 shadow-md"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-12 h-12 rounded-lg bg-primary text-primary-foreground flex flex-col items-center justify-center flex-shrink-0 shadow-inner">
+                <span className="text-[9px] opacity-90 leading-none">คิว</span>
+                <span className="font-display text-sm font-extrabold leading-none mt-0.5">
+                  {activeOrder.queueNumber}
+                </span>
+              </div>
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-1.5">
+                  {activeOrder.status === "PREPARING" && (
+                    <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+                  )}
+                  <span className="text-[10px] font-extrabold uppercase tracking-wide text-secondary">
+                    {ORDER_STATUS_LABEL[activeOrder.status]}
+                    {activeOrder.status !== "READY_FOR_PICKUP" &&
+                      ` • อีก ~${activeOrder.estimatedWaitTime} นาที`}
+                  </span>
+                </div>
+                <p className="text-sm font-semibold truncate">
+                  {activeOrder.items.map((i) => i.name).join(", ")}
+                </p>
+                <span className="text-xs opacity-70 truncate">{activeOrder.restaurantName}</span>
+              </div>
+            </div>
+            <div className="flex-shrink-0 flex items-center gap-0.5 text-xs font-semibold">
+              ดูสถานะ
+              <ChevronRight size={16} />
+            </div>
+          </Link>
+        </section>
+      )}
 
       {!query && (
         <section className="px-4 pb-4">
