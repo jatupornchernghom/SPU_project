@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen flex w-full">
       <Sidebar title="Admin" items={ITEMS} />
       <div className="flex-1 md:ml-64 flex flex-col">
-        <MobileStaffHeader title="Admin" />
+        <MobileStaffHeader title="Admin" items={ITEMS} />
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
     </div>

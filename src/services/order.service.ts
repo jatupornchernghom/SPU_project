@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Menu } from "@/models/Menu";
 import { Restaurant } from "@/models/Restaurant";
@@ -230,6 +231,55 @@ export async function listOrdersForRestaurant(restaurantId: string): Promise<Ser
   const restaurant = await Restaurant.findById(restaurantId).select("name");
   const orders = await Order.find({ restaurantId }).sort({ createdAt: -1 });
   return orders.map((o) => serializeOrder(o, restaurant?.name ?? ""));
+}
+
+/** Finished orders (completed or cancelled) for a restaurant's history view. */
+export async function listPastOrdersForRestaurant(restaurantId: string): Promise<SerializedOrder[]> {
+  await connectToDatabase();
+  const restaurant = await Restaurant.findById(restaurantId).select("name");
+  const orders = await Order.find({ restaurantId, status: { $in: ["COMPLETED", "CANCELLED"] } })
+    .sort({ createdAt: -1 })
+    .limit(100);
+  return orders.map((o) => serializeOrder(o, restaurant?.name ?? ""));
+}
+
+export type RestaurantOrderSummary = {
+  ordersToday: number;
+  completedToday: number;
+  cancelledToday: number;
+  revenueToday: number;
+};
+
+/** Quick "today" stats for a restaurant's own dashboard summary. */
+export async function getRestaurantOrderSummary(restaurantId: string): Promise<RestaurantOrderSummary> {
+  await connectToDatabase();
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const restaurantObjectId = new Types.ObjectId(restaurantId);
+
+  const [ordersToday, completedToday, cancelledToday, revenueAgg] = await Promise.all([
+    Order.countDocuments({ restaurantId, createdAt: { $gte: startOfToday } }),
+    Order.countDocuments({ restaurantId, status: "COMPLETED", createdAt: { $gte: startOfToday } }),
+    Order.countDocuments({ restaurantId, status: "CANCELLED", createdAt: { $gte: startOfToday } }),
+    Order.aggregate([
+      {
+        $match: {
+          restaurantId: restaurantObjectId,
+          paymentStatus: "PAID",
+          createdAt: { $gte: startOfToday },
+        },
+      },
+      { $group: { _id: null, total: { $sum: "$total" } } },
+    ]),
+  ]);
+
+  return {
+    ordersToday,
+    completedToday,
+    cancelledToday,
+    revenueToday: revenueAgg[0]?.total ?? 0,
+  };
 }
 
 export async function listAllOrdersForAdmin(filters: {

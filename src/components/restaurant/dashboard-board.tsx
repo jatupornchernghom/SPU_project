@@ -142,7 +142,7 @@ export function DashboardBoard({
             {pendingPaymentOrders.map((order) => (
               <div
                 key={order.id}
-                className="bg-status-waiting-bg border-2 border-status-waiting-fg/30 rounded-xl p-3 flex items-center justify-between gap-3"
+                className="bg-status-waiting-bg border-2 border-status-waiting-fg/30 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-12 h-12 rounded-lg bg-card text-status-waiting-fg flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
@@ -161,7 +161,7 @@ export function DashboardBoard({
                   size="sm"
                   disabled={confirmingPaymentId === order.id}
                   onClick={() => handleConfirmPayment(order.id)}
-                  className="h-9 rounded-full gap-1 flex-shrink-0"
+                  className="h-9 rounded-full gap-1 w-full sm:w-auto sm:flex-shrink-0"
                 >
                   <Wallet size={14} />
                   ยืนยันรับยอด
@@ -188,7 +188,7 @@ export function DashboardBoard({
               return (
                 <div
                   key={order.id}
-                  className="bg-card border border-border rounded-xl p-3 flex items-center justify-between gap-3"
+                  className="bg-card border border-border rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
@@ -204,7 +204,7 @@ export function DashboardBoard({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center justify-between sm:justify-end gap-2 sm:flex-shrink-0">
                     <StatusBadge status={order.status} />
                     {action && (
                       <Button
