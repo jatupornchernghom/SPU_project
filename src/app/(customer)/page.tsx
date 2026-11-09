@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Dices, Search, Sparkles } from "lucide-react";
+import { ChevronRight, Dices, Search, Sparkles, Store } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { listRestaurants, getPopularMenu } from "@/services/restaurant.service";
 import { listOrdersForUser } from "@/services/order.service";
@@ -18,7 +18,7 @@ export default async function HomePage({ searchParams }: Props) {
   const session = await auth();
   const [restaurants, popularMenu, myOrders] = await Promise.all([
     listRestaurants(),
-    getPopularMenu(),
+    getPopularMenu(12),
     session?.user ? listOrdersForUser(session.user.id) : Promise.resolve([]),
   ]);
   const activeOrder = myOrders.find((o) => ACTIVE_STATUSES.includes(o.status));
@@ -30,6 +30,17 @@ export default async function HomePage({ searchParams }: Props) {
       )
     : restaurants;
   const openCount = restaurants.filter((r) => r.isOpen).length;
+
+  // Popular dishes grouped under their restaurant (open ones first) — an order
+  // can only come from one restaurant, so mixing them in one list confused
+  // people when adding a dish from another stall swapped out their cart.
+  const popularByRestaurant = restaurants
+    .map((restaurant) => ({
+      restaurant,
+      dishes: popularMenu.filter((m) => m.restaurantId === restaurant.id),
+    }))
+    .filter((g) => g.dishes.length > 0)
+    .sort((a, b) => Number(b.restaurant.isOpen) - Number(a.restaurant.isOpen));
 
   return (
     <div className="flex flex-col gap-1 pb-6">
@@ -113,16 +124,39 @@ export default async function HomePage({ searchParams }: Props) {
         </section>
       )}
 
-      {!query && popularMenu.length > 0 && (
-        <section className="pb-2">
-          <div className="px-4 flex items-center justify-between mb-2">
+      {!query && popularByRestaurant.length > 0 && (
+        <section className="pb-2 px-4 flex flex-col gap-3">
+          <div>
             <h2 className="font-display text-lg font-bold text-foreground">เมนูยอดนิยม</h2>
+            <p className="text-xs text-muted-foreground">สั่งได้ครั้งละ 1 ร้านต่อออเดอร์</p>
           </div>
-          <div className="flex flex-col gap-2 px-4">
-            {popularMenu.map((menu) => (
-              <DishCard key={menu.id} menu={menu} />
-            ))}
-          </div>
+          {popularByRestaurant.map(({ restaurant, dishes }) => (
+            <div key={restaurant.id} className="rounded-2xl border border-border bg-muted/40 p-2 flex flex-col gap-2">
+              <Link
+                href={`/restaurants/${restaurant.id}`}
+                className="flex items-center justify-between gap-2 px-1.5 pt-1"
+              >
+                <span className="flex items-center gap-2 min-w-0">
+                  <Store size={16} className="text-primary flex-shrink-0" />
+                  <span className="font-display font-bold text-foreground truncate">{restaurant.name}</span>
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white flex-shrink-0 ${
+                      restaurant.isOpen ? "bg-emerald-500" : "bg-slate-500"
+                    }`}
+                  >
+                    {restaurant.isOpen ? "เปิด" : "ปิด"}
+                  </span>
+                </span>
+                <span className="flex items-center text-xs font-semibold text-primary flex-shrink-0">
+                  ดูทั้งร้าน
+                  <ChevronRight size={14} />
+                </span>
+              </Link>
+              {dishes.map((menu) => (
+                <DishCard key={menu.id} menu={menu} restaurantOpen={restaurant.isOpen} />
+              ))}
+            </div>
+          ))}
         </section>
       )}
 

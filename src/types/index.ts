@@ -35,6 +35,7 @@ export type SerializedOrderItem = {
   price: number;
   quantity: number;
   subtotal: number;
+  note?: string;
 };
 
 export type SerializedOrder = {
@@ -68,6 +69,7 @@ export type SerializedRestaurant = {
   openingHours: string;
   averagePreparationTime: number;
   rating: number;
+  reviewCount: number;
   queuePrefix: string;
   promptPayId: string;
   activeOrderCount: number;
@@ -86,6 +88,16 @@ export type SerializedMenu = {
   isAvailable: boolean;
   preparationTime: number;
   popular: boolean;
+};
+
+export type SerializedReview = {
+  id: string;
+  orderId: string;
+  restaurantId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
 };
 
 export type SerializedNotification = {

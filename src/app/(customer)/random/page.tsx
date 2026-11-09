@@ -4,8 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Dices, Loader2, Plus, Star } from "lucide-react";
-import { toast } from "sonner";
-import { useCartStore } from "@/lib/cart-store";
+import { useAddToCart } from "@/hooks/use-add-to-cart";
 import { Button } from "@/components/ui/button";
 import type { SerializedMenu } from "@/types";
 
@@ -13,7 +12,7 @@ export default function RandomMenuPage() {
   const [menu, setMenu] = useState<SerializedMenu | null>(null);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
-  const addItem = useCartStore((s) => s.addItem);
+  const { requestAdd, confirmDialog } = useAddToCart();
 
   async function spin() {
     setLoading(true);
@@ -29,13 +28,7 @@ export default function RandomMenuPage() {
 
   function handleAdd() {
     if (!menu) return;
-    addItem(menu.restaurantId, menu.restaurantName, {
-      menuId: menu.id,
-      name: menu.name,
-      price: menu.price,
-      image: menu.image,
-    });
-    toast.success(`เพิ่ม "${menu.name}" ลงตะกร้าแล้ว`);
+    requestAdd(menu);
   }
 
   return (
@@ -67,6 +60,8 @@ export default function RandomMenuPage() {
           </div>
         </div>
       )}
+
+      {confirmDialog}
 
       {checked && !menu && (
         <p className="text-sm text-muted-foreground">ตอนนี้ยังไม่มีร้านเปิดอยู่ ลองใหม่อีกครั้งนะ</p>

@@ -10,6 +10,7 @@ export const createOrderSchema = z.object({
       z.object({
         menuId: z.string().min(1),
         quantity: z.number().int().min(1).max(20),
+        note: z.string().trim().max(100, "หมายเหตุยาวเกิน 100 ตัวอักษร").optional(),
       })
     )
     .min(1, "ตะกร้าว่างเปล่า"),

@@ -4,6 +4,7 @@ import { countUnreadNotifications } from "@/services/notification.service";
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { FloatingCartButton } from "@/components/layout/floating-cart-button";
+import { CartOwnerSync } from "@/components/layout/cart-owner-sync";
 
 export default async function CustomerLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -16,6 +17,7 @@ export default async function CustomerLayout({ children }: { children: React.Rea
 
   return (
     <>
+      <CartOwnerSync userId={session?.user?.id ?? null} />
       <Header userName={session?.user?.name} unreadCount={unreadCount} />
       <main className="flex-1 w-full pt-16 pb-40 md:pb-24 max-w-5xl mx-auto">{children}</main>
       <FloatingCartButton />

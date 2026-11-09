@@ -1,15 +1,31 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Bell, CheckCircle2, ChefHat, PackageCheck, ScanLine, Wallet } from "lucide-react";
 import { useRestaurantStream } from "@/hooks/use-restaurant-stream";
 import { StatusBadge } from "@/components/queue/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PickupQrScanner } from "@/components/restaurant/pickup-qr-scanner";
+import { playNewOrderSound, unlockNewOrderSound } from "@/lib/new-order-sound";
 import type { OrderStatus, SerializedOrder } from "@/types";
 
 const ACTIVE_STATUSES: OrderStatus[] = ["ORDER_RECEIVED", "PREPARING", "READY_FOR_PICKUP"];
+
+function ItemNotes({ order }: { order: SerializedOrder }) {
+  const noted = order.items.filter((i) => i.note);
+  if (noted.length === 0) return null;
+  return (
+    <ul className="text-xs font-medium text-destructive">
+      {noted.map((i) => (
+        <li key={i.menuId} className="break-words">
+          * {i.name}: {i.note}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 const NEXT_ACTION: Partial<Record<OrderStatus, { label: string; next: OrderStatus; icon: typeof ChefHat }>> = {
   ORDER_RECEIVED: { label: "เริ่มปรุง", next: "PREPARING", icon: ChefHat },
@@ -30,9 +46,19 @@ export function DashboardBoard({
   const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
   const knownOrderIds = useRef(new Set(initialOrders.map((o) => o.id)));
 
+  useEffect(() => {
+    window.addEventListener("pointerdown", unlockNewOrderSound);
+    window.addEventListener("keydown", unlockNewOrderSound);
+    return () => {
+      window.removeEventListener("pointerdown", unlockNewOrderSound);
+      window.removeEventListener("keydown", unlockNewOrderSound);
+    };
+  }, []);
+
   useRestaurantStream(restaurantId, (updated) => {
     if (!knownOrderIds.current.has(updated.id) && ACTIVE_STATUSES.includes(updated.status)) {
       knownOrderIds.current.add(updated.id);
+      playNewOrderSound();
       toast(`มีออเดอร์ใหม่เข้ามา! คิว ${updated.queueNumber}`, {
         description: updated.items.map((i) => `${i.name} x${i.quantity}`).join(", "),
         icon: <Bell size={16} />,
@@ -94,12 +120,16 @@ export function DashboardBoard({
   async function handleVerifyPickup(e: React.FormEvent) {
     e.preventDefault();
     if (pickupCode.length !== 6) return;
+    await verifyPickup(pickupCode);
+  }
+
+  async function verifyPickup(code: string) {
     setVerifying(true);
     try {
       const res = await fetch(`/api/restaurants/${restaurantId}/pickup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pickupCode }),
+        body: JSON.stringify({ pickupCode: code }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -118,7 +148,7 @@ export function DashboardBoard({
     <div className="flex flex-col gap-6">
       <section className="bg-card border border-border rounded-xl p-4 flex flex-col gap-2 max-w-md">
         <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
-          <ScanLine size={16} /> ยืนยันรับอาหารด้วยรหัส
+          <ScanLine size={16} /> ยืนยันรับอาหารด้วยรหัส / QR
         </h2>
         <form onSubmit={handleVerifyPickup} className="flex gap-2">
           <Input
@@ -131,6 +161,7 @@ export function DashboardBoard({
             ยืนยัน
           </Button>
         </form>
+        <PickupQrScanner disabled={verifying} onScan={verifyPickup} />
       </section>
 
       {pendingPaymentOrders.length > 0 && (
@@ -152,6 +183,7 @@ export function DashboardBoard({
                     <p className="text-sm font-semibold text-foreground truncate">
                       {order.items.map((i) => `${i.name} x${i.quantity}`).join(", ")}
                     </p>
+                    <ItemNotes order={order} />
                     <p className="text-xs text-status-waiting-fg font-medium">
                       {order.orderNumber} • QR พร้อมเพย์ • ฿{order.total}
                     </p>
@@ -198,6 +230,7 @@ export function DashboardBoard({
                       <p className="text-sm font-semibold text-foreground truncate">
                         {order.items.map((i) => `${i.name} x${i.quantity}`).join(", ")}
                       </p>
+                      <ItemNotes order={order} />
                       <p className="text-xs text-muted-foreground">
                         {order.orderNumber} • รับเวลา{" "}
                         {order.pickupTime === "ASAP" ? "เร็วที่สุด" : order.pickupTime} • ฿{order.total}

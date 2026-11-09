@@ -2,7 +2,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Clock, Star } from "lucide-react";
 import { getRestaurantById, listMenuForRestaurant } from "@/services/restaurant.service";
+import { listReviewsForRestaurant } from "@/services/review.service";
 import { DishCard } from "@/components/menu/dish-card";
+import { ReviewList } from "@/components/review/review-list";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +15,7 @@ export default async function RestaurantDetailPage({ params }: Props) {
   const restaurant = await getRestaurantById(id);
   if (!restaurant) notFound();
 
-  const menu = await listMenuForRestaurant(id);
+  const [menu, reviews] = await Promise.all([listMenuForRestaurant(id), listReviewsForRestaurant(id)]);
   const categories = [...new Set(menu.map((m) => m.category))];
   const waitEstimate = restaurant.activeOrderCount * restaurant.averagePreparationTime;
 
@@ -40,6 +42,9 @@ export default async function RestaurantDetailPage({ params }: Props) {
         <span className="flex items-center gap-1 font-semibold">
           <Star size={16} className="text-secondary fill-secondary" />
           {restaurant.rating.toFixed(1)}
+          {restaurant.reviewCount > 0 && (
+            <span className="font-normal text-muted-foreground">({restaurant.reviewCount} รีวิว)</span>
+          )}
         </span>
         <span className="flex items-center gap-1 text-muted-foreground">
           <Clock size={16} />
@@ -63,11 +68,18 @@ export default async function RestaurantDetailPage({ params }: Props) {
               {menu
                 .filter((m) => m.category === category)
                 .map((m) => (
-                  <DishCard key={m.id} menu={m} />
+                  <DishCard key={m.id} menu={m} restaurantOpen={restaurant.isOpen} />
                 ))}
             </div>
           </section>
         ))}
+
+        <section className="flex flex-col gap-2 pt-2">
+          <h2 className="font-display text-base font-bold text-foreground">
+            รีวิวจากลูกค้า{restaurant.reviewCount > 0 && ` (${restaurant.reviewCount})`}
+          </h2>
+          <ReviewList reviews={reviews} emptyText="ยังไม่มีรีวิว — สั่งแล้วมารีวิวเป็นคนแรกได้เลย" />
+        </section>
       </div>
     </div>
   );

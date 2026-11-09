@@ -7,15 +7,21 @@ export type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  /** Free-text request for the kitchen, e.g. "เผ็ดน้อย". */
+  note: string;
 };
 
 type CartState = {
+  /** User id the persisted cart belongs to (null = guest). */
+  ownerId: string | null;
   restaurantId: string | null;
   restaurantName: string | null;
   items: CartItem[];
-  addItem: (restaurantId: string, restaurantName: string, item: Omit<CartItem, "quantity">) => void;
+  addItem: (restaurantId: string, restaurantName: string, item: Omit<CartItem, "quantity" | "note">) => void;
   removeItem: (menuId: string) => void;
   setQuantity: (menuId: string, quantity: number) => void;
+  setNote: (menuId: string, note: string) => void;
+  syncOwner: (userId: string | null) => void;
   clear: () => void;
   subtotal: () => number;
   totalItems: () => number;
@@ -24,6 +30,7 @@ type CartState = {
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
+      ownerId: null,
       restaurantId: null,
       restaurantName: null,
       items: [],
@@ -32,7 +39,7 @@ export const useCartStore = create<CartState>()(
         const state = get();
 
         if (state.restaurantId && state.restaurantId !== restaurantId && state.items.length > 0) {
-          set({ restaurantId, restaurantName, items: [{ ...item, quantity: 1 }] });
+          set({ restaurantId, restaurantName, items: [{ ...item, quantity: 1, note: "" }] });
           return;
         }
 
@@ -49,7 +56,7 @@ export const useCartStore = create<CartState>()(
           set({
             restaurantId,
             restaurantName,
-            items: [...state.items, { ...item, quantity: 1 }],
+            items: [...state.items, { ...item, quantity: 1, note: "" }],
           });
         }
       },
@@ -65,6 +72,23 @@ export const useCartStore = create<CartState>()(
           return;
         }
         set({ items: get().items.map((i) => (i.menuId === menuId ? { ...i, quantity } : i)) });
+      },
+
+      setNote: (menuId, note) => {
+        set({ items: get().items.map((i) => (i.menuId === menuId ? { ...i, note } : i)) });
+      },
+
+      // The cart lives in localStorage, which every account on this browser
+      // shares — so drop it whenever it belongs to someone other than the
+      // signed-in user. A guest cart (ownerId null) is adopted on login.
+      syncOwner: (userId) => {
+        const { ownerId } = get();
+        if (ownerId === userId) return;
+        if (ownerId !== null) {
+          set({ ownerId: userId, restaurantId: null, restaurantName: null, items: [] });
+        } else {
+          set({ ownerId: userId });
+        }
       },
 
       clear: () => set({ restaurantId: null, restaurantName: null, items: [] }),

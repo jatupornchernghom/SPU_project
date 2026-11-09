@@ -58,8 +58,9 @@ export default function RegisterPage() {
         return;
       }
 
-      router.push("/");
-      router.refresh();
+      // Full page load (not router.push) so nothing the client router cached
+      // for a previously signed-in account carries over.
+      window.location.assign("/");
     } finally {
       setLoading(false);
     }
@@ -83,14 +84,14 @@ export default function RegisterPage() {
           />
         </Field>
 
-        <Field label="อีเมล @spu.ac.th" id="email">
+        <Field label="อีเมล @spumail.net" id="email">
           <Input
             id="email"
             type="email"
             required
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            placeholder="yourname@spu.ac.th"
+            placeholder="yourname@spumail.net"
             className="h-12"
           />
         </Field>

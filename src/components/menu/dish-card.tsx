@@ -2,22 +2,16 @@
 
 import Image from "next/image";
 import { Plus, Star } from "lucide-react";
-import { toast } from "sonner";
-import { useCartStore } from "@/lib/cart-store";
+import { useAddToCart } from "@/hooks/use-add-to-cart";
 import type { SerializedMenu } from "@/types";
 
-export function DishCard({ menu }: { menu: SerializedMenu }) {
-  const addItem = useCartStore((s) => s.addItem);
+export function DishCard({ menu, restaurantOpen = true }: { menu: SerializedMenu; restaurantOpen?: boolean }) {
+  const { requestAdd, confirmDialog } = useAddToCart();
+  const canAdd = menu.isAvailable && restaurantOpen;
 
   function handleAdd() {
-    if (!menu.isAvailable) return;
-    addItem(menu.restaurantId, menu.restaurantName, {
-      menuId: menu.id,
-      name: menu.name,
-      price: menu.price,
-      image: menu.image,
-    });
-    toast.success(`เพิ่ม "${menu.name}" ลงตะกร้าแล้ว`);
+    if (!canAdd) return;
+    requestAdd(menu);
   }
 
   return (
@@ -39,14 +33,15 @@ export function DishCard({ menu }: { menu: SerializedMenu }) {
           <button
             type="button"
             onClick={handleAdd}
-            disabled={!menu.isAvailable}
+            disabled={!canAdd}
             className="h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center gap-1 active:scale-90 transition-transform disabled:opacity-40 disabled:pointer-events-none"
           >
             <Plus size={14} />
-            {menu.isAvailable ? "เพิ่ม" : "หมด"}
+            {!restaurantOpen ? "ร้านปิด" : menu.isAvailable ? "เพิ่ม" : "หมด"}
           </button>
         </div>
       </div>
+      {confirmDialog}
     </div>
   );
 }

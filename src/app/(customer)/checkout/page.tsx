@@ -52,7 +52,7 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           restaurantId,
-          items: items.map((i) => ({ menuId: i.menuId, quantity: i.quantity })),
+          items: items.map((i) => ({ menuId: i.menuId, quantity: i.quantity, note: i.note || undefined })),
           pickupTime,
           paymentMethod,
         }),
@@ -86,8 +86,9 @@ export default function CheckoutPage() {
         <div className="bg-card border border-border rounded-xl divide-y divide-border">
           {items.map((item) => (
             <div key={item.menuId} className="flex items-center justify-between px-3 py-2.5 text-sm">
-              <span className="text-foreground">
+              <span className="text-foreground min-w-0">
                 {item.name} <span className="text-muted-foreground">x{item.quantity}</span>
+                {item.note && <span className="block text-xs text-destructive break-words">* {item.note}</span>}
               </span>
               <span className="font-semibold text-foreground">฿{item.price * item.quantity}</span>
             </div>

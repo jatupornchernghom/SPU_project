@@ -12,7 +12,7 @@ export const registerSchema = z.object({
   email: z
     .string()
     .email("อีเมลไม่ถูกต้อง")
-    .refine((v) => v.endsWith("@spu.ac.th"), "กรุณาใช้อีเมล @spu.ac.th"),
+    .refine((v) => v.toLowerCase().endsWith("@spumail.net"), "กรุณาใช้อีเมล @spumail.net"),
   studentId: z
     .string()
     .optional()

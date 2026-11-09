@@ -6,10 +6,11 @@ import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartHydrated } from "@/hooks/use-cart-hydrated";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function CartPage() {
   const hydrated = useCartHydrated();
-  const { items, restaurantName, setQuantity, removeItem, subtotal } = useCartStore();
+  const { items, restaurantName, setQuantity, setNote, removeItem, subtotal } = useCartStore();
 
   if (!hydrated) return null;
 
@@ -69,6 +70,14 @@ export default function CartPage() {
                   </button>
                 </div>
               </div>
+              <Input
+                value={item.note ?? ""}
+                onChange={(e) => setNote(item.menuId, e.target.value)}
+                maxLength={100}
+                placeholder="หมายเหตุ เช่น เผ็ดน้อย, ไม่ใส่ผัก"
+                aria-label={`หมายเหตุสำหรับ ${item.name}`}
+                className="h-9 mt-2 text-sm"
+              />
             </div>
           </div>
         ))}

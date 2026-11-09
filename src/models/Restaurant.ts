@@ -11,6 +11,7 @@ export interface IRestaurant {
   openingHours: string;
   averagePreparationTime: number;
   rating: number;
+  reviewCount: number;
   queuePrefix: string;
   promptPayId: string;
   createdAt: Date;
@@ -28,6 +29,8 @@ const restaurantSchema = new Schema<IRestaurant>(
     openingHours: { type: String, default: "08:00 - 16:00" },
     averagePreparationTime: { type: Number, required: true, min: 1 },
     rating: { type: Number, default: 4.5, min: 0, max: 5 },
+    // Kept in sync with the Review collection by review.service.
+    reviewCount: { type: Number, default: 0, min: 0 },
     queuePrefix: { type: String, required: true, uppercase: true, minlength: 1, maxlength: 2 },
     // Restaurant's own PromptPay ID (mobile/national ID/e-Wallet) — each
     // restaurant receives payment directly into its own account, so this is

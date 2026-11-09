@@ -14,6 +14,7 @@ export interface IOrderItem {
   price: number;
   quantity: number;
   subtotal: number;
+  note?: string;
 }
 
 export interface IOrder {
@@ -42,6 +43,7 @@ const orderItemSchema = new Schema<IOrderItem>(
     price: { type: Number, required: true, min: 0 },
     quantity: { type: Number, required: true, min: 1 },
     subtotal: { type: Number, required: true, min: 0 },
+    note: { type: String, trim: true, maxlength: 100 },
   },
   { _id: false }
 );

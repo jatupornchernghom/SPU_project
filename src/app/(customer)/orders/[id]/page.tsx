@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getOrderById } from "@/services/order.service";
+import { getReviewForOrder } from "@/services/review.service";
 import { OrderTracker } from "@/components/order/order-tracker";
 
 type Props = { params: Promise<{ id: string }> };
@@ -17,5 +18,8 @@ export default async function OrderDetailPage({ params }: Props) {
   });
   if (!order) notFound();
 
-  return <OrderTracker order={order} />;
+  const canReview = order.userId === session.user.id;
+  const review = canReview ? await getReviewForOrder(order.id) : null;
+
+  return <OrderTracker order={order} review={review} canReview={canReview} />;
 }

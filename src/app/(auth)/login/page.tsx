@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,6 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,8 +42,13 @@ function LoginForm() {
       return;
     }
 
-    router.push(searchParams.get("callbackUrl") ?? "/");
-    router.refresh();
+    // Full page load (not router.push + refresh) so the client router cache —
+    // which still holds pages/layouts rendered for the previous account if
+    // someone signs in over an existing session — is thrown away entirely.
+    // Only same-site paths are honored, so callbackUrl can't redirect off-site.
+    const callbackUrl = searchParams.get("callbackUrl");
+    const target = callbackUrl?.startsWith("/") && !callbackUrl.startsWith("//") ? callbackUrl : "/";
+    window.location.assign(target);
   }
 
   return (
@@ -65,7 +69,7 @@ function LoginForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="student@spu.ac.th"
+              placeholder="student@spumail.net"
               className="h-12 pl-10"
             />
           </div>

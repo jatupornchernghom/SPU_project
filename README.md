@@ -52,10 +52,10 @@ All demo accounts use the password **`password123`**.
 
 | Email | Role | Notes |
 | --- | --- | --- |
-| `student@spu.ac.th` | STUDENT | Browse, order, track queue |
-| `staff@spu.ac.th` | STAFF | Same customer-facing access as a student |
-| `admin@spu.ac.th` | ADMIN | `/admin` — restaurants, menu, orders, stats |
-| `restaurant@spu.ac.th` | RESTAURANT_STAFF | `/restaurant/dashboard` — scoped to "ร้านกะเพรา SPU" |
+| `student@spumail.net` | STUDENT | Browse, order, track queue |
+| `staff@spumail.net` | STAFF | Same customer-facing access as a student |
+| `admin@spumail.net` | ADMIN | `/admin` — restaurants, menu, orders, stats |
+| `restaurant@spumail.net` | RESTAURANT_STAFF | `/restaurant/dashboard` — scoped to "ร้านกะเพรา SPU" |
 
 ## 7. Project Structure
 
@@ -105,8 +105,8 @@ Business logic lives in `src/services/*` and is shared between these route handl
 
 ## 9. Testing the Live Queue
 
-1. Sign in as `student@spu.ac.th` in one browser tab, order from any restaurant, and land on `/orders/[id]`.
-2. In a second tab (or incognito window), sign in as `restaurant@spu.ac.th` (orders from "ร้านกะเพรา SPU") and open `/restaurant/dashboard`.
+1. Sign in as `student@spumail.net` in one browser tab, order from any restaurant, and land on `/orders/[id]`.
+2. In a second tab (or incognito window), sign in as `restaurant@spumail.net` (orders from "ร้านกะเพรา SPU") and open `/restaurant/dashboard`.
 3. Click through **เริ่มปรุง → พร้อมรับ** on the order's row.
 4. Watch the first tab — the status timeline, queue badge, and estimated wait update **instantly with no refresh** (pushed over Server-Sent Events). When the order reaches "พร้อมรับ" a QR code and 6-digit pickup code appear.
 5. Back on the dashboard, enter the pickup code into "ยืนยันรับอาหารด้วยรหัส" (or use `POST /api/restaurants/:id/pickup`) to complete the order — the customer tab updates to "รับอาหารเรียบร้อยแล้ว" live.

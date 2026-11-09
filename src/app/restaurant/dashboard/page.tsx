@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth";
 import { listOrdersForRestaurant } from "@/services/order.service";
+import { getRestaurantById } from "@/services/restaurant.service";
 import { DashboardBoard } from "@/components/restaurant/dashboard-board";
+import { StoreOpenToggle } from "@/components/restaurant/store-open-toggle";
 
 export default async function RestaurantDashboardPage() {
   const session = await auth();
@@ -14,11 +16,17 @@ export default async function RestaurantDashboardPage() {
     );
   }
 
-  const orders = await listOrdersForRestaurant(restaurantId);
+  const [orders, restaurant] = await Promise.all([
+    listOrdersForRestaurant(restaurantId),
+    getRestaurantById(restaurantId),
+  ]);
 
   return (
     <div className="flex flex-col gap-1">
-      <h1 className="font-display text-xl font-bold text-foreground mb-3">แดชบอร์ดร้านอาหาร</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <h1 className="font-display text-xl font-bold text-foreground">แดชบอร์ดร้านอาหาร</h1>
+        {restaurant && <StoreOpenToggle restaurantId={restaurantId} initialIsOpen={restaurant.isOpen} />}
+      </div>
       <DashboardBoard restaurantId={restaurantId} initialOrders={orders} />
     </div>
   );

@@ -73,7 +73,7 @@ The seed script (`npm run seed`) just needs `MONGODB_URI` in its environment —
 npm run seed
 ```
 
-Demo accounts (password `password123` for all): `student@spu.ac.th`, `staff@spu.ac.th`, `admin@spu.ac.th`, `restaurant@spu.ac.th`.
+Demo accounts (password `password123` for all): `student@spumail.net`, `staff@spumail.net`, `admin@spumail.net`, `restaurant@spumail.net`.
 
 ## 6. Verify
 

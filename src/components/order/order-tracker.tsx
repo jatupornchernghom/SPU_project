@@ -5,9 +5,18 @@ import { CheckCircle2, Clock } from "lucide-react";
 import { useOrderStream } from "@/hooks/use-order-stream";
 import { StatusTimeline } from "@/components/queue/status-timeline";
 import { StatusBadge } from "@/components/queue/status-badge";
-import type { SerializedOrder } from "@/types";
+import { ReviewForm } from "@/components/review/review-form";
+import type { SerializedOrder, SerializedReview } from "@/types";
 
-export function OrderTracker({ order: initialOrder }: { order: SerializedOrder }) {
+export function OrderTracker({
+  order: initialOrder,
+  review = null,
+  canReview = false,
+}: {
+  order: SerializedOrder;
+  review?: SerializedReview | null;
+  canReview?: boolean;
+}) {
   const order = useOrderStream(initialOrder.id, initialOrder);
 
   return (
@@ -25,6 +34,10 @@ export function OrderTracker({ order: initialOrder }: { order: SerializedOrder }
           <Clock size={16} className="flex-shrink-0" />
           รอร้านยืนยันรับยอดโอน — หากโอนแล้วแต่สถานะยังไม่เปลี่ยน รอสักครู่หรือแจ้งพนักงานหน้าร้าน
         </div>
+      )}
+
+      {canReview && order.status === "COMPLETED" && (
+        <ReviewForm orderId={order.id} restaurantName={order.restaurantName} initialReview={review} />
       )}
 
       <div className="bg-card border border-border rounded-2xl p-5">
@@ -82,8 +95,9 @@ export function OrderTracker({ order: initialOrder }: { order: SerializedOrder }
         <div className="bg-card border border-border rounded-xl divide-y divide-border">
           {order.items.map((item) => (
             <div key={item.menuId} className="flex items-center justify-between px-3 py-2.5 text-sm">
-              <span>
+              <span className="min-w-0">
                 {item.name} <span className="text-muted-foreground">x{item.quantity}</span>
+                {item.note && <span className="block text-xs text-destructive break-words">* {item.note}</span>}
               </span>
               <span className="font-semibold">฿{item.subtotal}</span>
             </div>

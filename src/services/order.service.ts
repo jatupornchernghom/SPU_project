@@ -61,6 +61,7 @@ export async function createOrder(userId: string, input: CreateOrderInput): Prom
       price: menu.price,
       quantity: item.quantity,
       subtotal: menu.price * item.quantity,
+      note: item.note || undefined,
     };
   });
 

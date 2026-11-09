@@ -114,7 +114,7 @@ async function main() {
   await User.create([
     {
       name: "น้องพิม นักศึกษา",
-      email: "student@spu.ac.th",
+      email: "student@spumail.net",
       passwordHash,
       studentId: "63130001",
       phone: "0812345678",
@@ -122,7 +122,7 @@ async function main() {
     },
     {
       name: "คุณบุคลากร ใจดี",
-      email: "staff@spu.ac.th",
+      email: "staff@spumail.net",
       passwordHash,
       studentId: "EMP0001",
       phone: "0898765432",
@@ -130,13 +130,13 @@ async function main() {
     },
     {
       name: "ผู้ดูแลระบบ",
-      email: "admin@spu.ac.th",
+      email: "admin@spumail.net",
       passwordHash,
       role: "ADMIN",
     },
     {
       name: "พนักงานร้านกะเพรา SPU",
-      email: "restaurant@spu.ac.th",
+      email: "restaurant@spumail.net",
       passwordHash,
       role: "RESTAURANT_STAFF",
       restaurantId: kaprao._id,
@@ -145,10 +145,10 @@ async function main() {
 
   console.log("Seed complete.");
   console.log("Demo accounts (password: password123):");
-  console.log("  student@spu.ac.th      (STUDENT)");
-  console.log("  staff@spu.ac.th        (STAFF)");
-  console.log("  admin@spu.ac.th        (ADMIN)");
-  console.log("  restaurant@spu.ac.th   (RESTAURANT_STAFF — ร้านกะเพรา SPU)");
+  console.log("  student@spumail.net     (STUDENT)");
+  console.log("  staff@spumail.net       (STAFF)");
+  console.log("  admin@spumail.net       (ADMIN)");
+  console.log("  restaurant@spumail.net  (RESTAURANT_STAFF — ร้านกะเพรา SPU)");
 
   await mongoose.disconnect();
 }
