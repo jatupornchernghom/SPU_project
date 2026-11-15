@@ -32,8 +32,10 @@ export function handleApiError(error: unknown) {
     return NextResponse.json({ error: error.message }, { status: error.status });
   }
   if (error instanceof ZodError) {
+    // Surface the schema's own (Thai) message, e.g. "สั่งได้สูงสุด 50 จานต่อเมนู",
+    // instead of a generic one the user can't act on.
     return NextResponse.json(
-      { error: "ข้อมูลไม่ถูกต้อง", details: error.flatten() },
+      { error: error.issues[0]?.message ?? "ข้อมูลไม่ถูกต้อง", details: error.flatten() },
       { status: 400 }
     );
   }

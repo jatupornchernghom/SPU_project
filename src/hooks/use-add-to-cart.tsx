@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCartStore } from "@/lib/cart-store";
+import { MAX_ITEM_QUANTITY } from "@/lib/validations/order";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,12 +26,16 @@ export function useAddToCart() {
   const [pending, setPending] = useState<SerializedMenu | null>(null);
 
   function add(menu: SerializedMenu) {
-    addItem(menu.restaurantId, menu.restaurantName, {
+    const added = addItem(menu.restaurantId, menu.restaurantName, {
       menuId: menu.id,
       name: menu.name,
       price: menu.price,
       image: menu.image,
     });
+    if (!added) {
+      toast.error(`"${menu.name}" สั่งได้สูงสุด ${MAX_ITEM_QUANTITY} จานต่อออเดอร์`);
+      return;
+    }
     toast.success(`เพิ่ม "${menu.name}" ลงตะกร้าแล้ว`);
   }
 

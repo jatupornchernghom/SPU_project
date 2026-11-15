@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
+import { MAX_ITEM_QUANTITY } from "@/lib/validations/order";
 import { useCartHydrated } from "@/hooks/use-cart-hydrated";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,16 +61,23 @@ export default function CartPage() {
                   >
                     <Minus size={14} />
                   </button>
-                  <span className="w-5 text-center text-sm font-semibold">{item.quantity}</span>
+                  <span className="w-7 text-center text-sm font-semibold">{item.quantity}</span>
                   <button
                     type="button"
                     onClick={() => setQuantity(item.menuId, item.quantity + 1)}
-                    className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center active:scale-90"
+                    disabled={item.quantity >= MAX_ITEM_QUANTITY}
+                    aria-label="เพิ่มจำนวน"
+                    className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center active:scale-90 disabled:opacity-40 disabled:active:scale-100"
                   >
                     <Plus size={14} />
                   </button>
                 </div>
               </div>
+              {item.quantity >= MAX_ITEM_QUANTITY && (
+                <p className="text-xs text-muted-foreground text-right mt-1">
+                  สั่งได้สูงสุด {MAX_ITEM_QUANTITY} จานต่อเมนู
+                </p>
+              )}
               <Input
                 value={item.note ?? ""}
                 onChange={(e) => setNote(item.menuId, e.target.value)}

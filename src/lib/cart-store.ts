@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { MAX_ITEM_QUANTITY } from "@/lib/validations/order";
 
 export type CartItem = {
   menuId: string;
@@ -17,7 +18,8 @@ type CartState = {
   restaurantId: string | null;
   restaurantName: string | null;
   items: CartItem[];
-  addItem: (restaurantId: string, restaurantName: string, item: Omit<CartItem, "quantity" | "note">) => void;
+  /** Returns false when the dish is already at MAX_ITEM_QUANTITY. */
+  addItem: (restaurantId: string, restaurantName: string, item: Omit<CartItem, "quantity" | "note">) => boolean;
   removeItem: (menuId: string) => void;
   setQuantity: (menuId: string, quantity: number) => void;
   setNote: (menuId: string, note: string) => void;
@@ -40,11 +42,12 @@ export const useCartStore = create<CartState>()(
 
         if (state.restaurantId && state.restaurantId !== restaurantId && state.items.length > 0) {
           set({ restaurantId, restaurantName, items: [{ ...item, quantity: 1, note: "" }] });
-          return;
+          return true;
         }
 
         const existing = state.items.find((i) => i.menuId === item.menuId);
         if (existing) {
+          if (existing.quantity >= MAX_ITEM_QUANTITY) return false;
           set({
             restaurantId,
             restaurantName,
@@ -59,6 +62,7 @@ export const useCartStore = create<CartState>()(
             items: [...state.items, { ...item, quantity: 1, note: "" }],
           });
         }
+        return true;
       },
 
       removeItem: (menuId) => {
@@ -71,7 +75,8 @@ export const useCartStore = create<CartState>()(
           get().removeItem(menuId);
           return;
         }
-        set({ items: get().items.map((i) => (i.menuId === menuId ? { ...i, quantity } : i)) });
+        const clamped = Math.min(quantity, MAX_ITEM_QUANTITY);
+        set({ items: get().items.map((i) => (i.menuId === menuId ? { ...i, quantity: clamped } : i)) });
       },
 
       setNote: (menuId, note) => {
