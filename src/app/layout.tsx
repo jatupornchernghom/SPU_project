@@ -15,7 +15,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SPU SkipQ — สั่งอาหารล่วงหน้า ข้ามคิว",
+  title: "SkipQ — สั่งอาหารล่วงหน้า ข้ามคิว",
   description:
     "แพลตฟอร์ม Pre-order อาหารและติดตามคิวแบบ Real-time สำหรับโรงอาหารมหาวิทยาลัยศรีปทุม",
 };

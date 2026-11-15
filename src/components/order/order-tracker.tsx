@@ -84,7 +84,7 @@ export function OrderTracker({
         <div className="bg-status-ready-bg rounded-2xl p-5 flex flex-col items-center gap-2 text-center">
           <CheckCircle2 size={40} className="text-status-ready-fg" />
           <h2 className="font-display text-lg font-bold text-status-ready-fg">รับอาหารเรียบร้อยแล้ว</h2>
-          <p className="text-sm text-muted-foreground">ขอบคุณที่ใช้บริการ SPU SkipQ</p>
+          <p className="text-sm text-muted-foreground">ขอบคุณที่ใช้บริการ SkipQ</p>
         </div>
       )}
 

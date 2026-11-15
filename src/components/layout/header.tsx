@@ -19,7 +19,7 @@ export function Header({
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-display text-base font-bold text-foreground truncate">
-                SPU SkipQ
+                SkipQ
               </span>
               <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-primary/10 text-primary">
                 Live

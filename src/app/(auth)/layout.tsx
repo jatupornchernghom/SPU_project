@@ -15,7 +15,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
             <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground">
               <UtensilsCrossed size={24} />
             </div>
-            <span className="font-display text-lg font-bold text-foreground">SPU SkipQ</span>
+            <span className="font-display text-lg font-bold text-foreground">SkipQ</span>
           </div>
           {children}
         </div>

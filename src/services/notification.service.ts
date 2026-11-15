@@ -16,7 +16,7 @@ const SCRIPTS: Record<NotificationType, { title: string; message: string }> = {
   },
   COMPLETED: {
     title: "รับอาหารสำเร็จ",
-    message: "Thank you for using SPU SkipQ.",
+    message: "Thank you for using SkipQ.",
   },
 };
 
