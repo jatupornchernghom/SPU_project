@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Store, UtensilsCrossed, Receipt } from "lucide-react";
+import { LayoutDashboard, Store, UtensilsCrossed, Receipt, Users } from "lucide-react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileStaffHeader } from "@/components/layout/mobile-staff-header";
 
@@ -9,6 +9,7 @@ const ITEMS = [
   { href: "/admin/restaurants", label: "ร้านอาหาร", icon: Store },
   { href: "/admin/menu", label: "เมนู", icon: UtensilsCrossed },
   { href: "/admin/orders", label: "คำสั่งซื้อ", icon: Receipt },
+  { href: "/admin/users", label: "บัญชีผู้ใช้", icon: Users },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -110,3 +110,14 @@ export type SerializedNotification = {
   isRead: boolean;
   createdAt: string;
 };
+
+export type SerializedUser = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: UserRole;
+  restaurantId?: string;
+  restaurantName?: string;
+  createdAt: string;
+};

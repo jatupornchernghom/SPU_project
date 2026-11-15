@@ -23,7 +23,9 @@ export async function POST(request: Request) {
       passwordHash,
       studentId: input.studentId,
       phone: input.phone || undefined,
-      role: input.role,
+      // Self sign-up is students only; staff / restaurant / admin accounts are
+      // created by an admin (POST /api/admin/users).
+      role: "STUDENT",
     });
 
     return NextResponse.json({ id: user._id.toString() }, { status: 201 });

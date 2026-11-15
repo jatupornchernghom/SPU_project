@@ -24,7 +24,6 @@ export const registerSchema = z.object({
     .transform((v) => (v?.trim() ? v.trim() : undefined))
     .refine((v) => !v || /^0[0-9]{9}$/.test(v), "เบอร์โทรไม่ถูกต้อง"),
   password: z.string().min(8, "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"),
-  role: z.enum(["STUDENT", "STAFF"]).default("STUDENT"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -35,3 +34,24 @@ export const changePasswordSchema = z.object({
 });
 
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+/** Accounts an admin creates (staff, restaurant staff, other admins). */
+export const adminCreateUserSchema = z
+  .object({
+    name: z.string().trim().min(2, "กรุณากรอกชื่อ-นามสกุล"),
+    email: z.string().trim().toLowerCase().email("อีเมลไม่ถูกต้อง"),
+    password: z.string().min(8, "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"),
+    phone: z
+      .string()
+      .optional()
+      .transform((v) => (v?.trim() ? v.trim() : undefined))
+      .refine((v) => !v || /^0[0-9]{9}$/.test(v), "เบอร์โทรไม่ถูกต้อง"),
+    role: z.enum(["STAFF", "RESTAURANT_STAFF", "ADMIN"]),
+    restaurantId: z.string().optional(),
+  })
+  .refine((v) => v.role !== "RESTAURANT_STAFF" || !!v.restaurantId, {
+    message: "กรุณาเลือกร้านของบัญชีร้านค้า",
+    path: ["restaurantId"],
+  });
+
+export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>;

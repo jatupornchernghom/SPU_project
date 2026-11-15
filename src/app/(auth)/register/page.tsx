@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +19,6 @@ export default function RegisterPage() {
     studentId: "",
     phone: "",
     password: "",
-    role: "STUDENT" as "STUDENT" | "STAFF",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -72,7 +70,7 @@ export default function RegisterPage() {
     <div className="flex flex-col gap-5">
       <div className="text-center">
         <h1 className="font-display text-xl font-bold text-foreground">สมัครสมาชิกใหม่</h1>
-        <p className="text-sm text-muted-foreground mt-1">สำหรับนักศึกษาและบุคลากร ม.ศรีปทุม</p>
+        <p className="text-sm text-muted-foreground mt-1">สำหรับนักศึกษา ม.ศรีปทุม (บัญชีบุคลากรและร้านค้า ติดต่อผู้ดูแลระบบ)</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -104,7 +102,7 @@ export default function RegisterPage() {
           </div>
         </Field>
 
-        <Field label="รหัสนักศึกษา/รหัสพนักงาน" id="studentId">
+        <Field label="รหัสนักศึกษา" id="studentId">
           <Input
             id="studentId"
             value={form.studentId}
@@ -133,24 +131,6 @@ export default function RegisterPage() {
             className="h-12"
           />
         </Field>
-
-        <div className="flex gap-2">
-          {(["STUDENT", "STAFF"] as const).map((role) => (
-            <button
-              key={role}
-              type="button"
-              onClick={() => setForm({ ...form, role })}
-              className={cn(
-                "flex-1 h-11 rounded-xl text-sm font-semibold border",
-                form.role === role
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-foreground border-border"
-              )}
-            >
-              {role === "STUDENT" ? "นักศึกษา" : "บุคลากร"}
-            </button>
-          ))}
-        </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
 
