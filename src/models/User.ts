@@ -5,7 +5,8 @@ export interface IUser {
   _id: Types.ObjectId;
   name: string;
   email: string;
-  passwordHash: string;
+  /** Absent for accounts that only sign in with Google. */
+  passwordHash?: string;
   studentId?: string;
   phone?: string;
   role: UserRole;
@@ -21,7 +22,7 @@ const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    passwordHash: { type: String, required: true },
+    passwordHash: { type: String },
     studentId: { type: String, trim: true },
     phone: { type: String, trim: true },
     role: { type: String, enum: USER_ROLES, required: true, default: "STUDENT" },

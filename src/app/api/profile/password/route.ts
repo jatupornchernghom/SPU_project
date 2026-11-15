@@ -15,6 +15,8 @@ export async function PATCH(request: Request) {
     const user = await User.findById(session.user.id);
     if (!user) throw new ApiError("ไม่พบผู้ใช้งาน", 404);
 
+    if (!user.passwordHash) throw new ApiError("บัญชีนี้เข้าสู่ระบบด้วย Google จึงไม่มีรหัสผ่านให้เปลี่ยน", 400);
+
     const valid = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!valid) throw new ApiError("รหัสผ่านปัจจุบันไม่ถูกต้อง", 400);
 

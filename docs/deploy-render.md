@@ -65,6 +65,26 @@ In the service's **Environment** tab:
 | `AUTH_SECRET` | Generate one locally: `npx auth secret` (prints a value — paste it here) |
 | `NEXTAUTH_URL` | Your Render URL, e.g. `https://spu-skipq.onrender.com` — you won't know the exact URL until after the first deploy, so deploy once, copy the assigned URL, paste it here, then trigger **Manual Deploy → Deploy latest commit** to pick it up |
 
+### Optional: "Sign in with Google"
+
+Students can sign in with their `@spumail.net` Google account. Without these two variables the Google button simply doesn't appear.
+
+1. [Google Cloud Console](https://console.cloud.google.com) → create (or pick) a project
+2. **APIs & Services → OAuth consent screen**: user type **External**, fill in the app name and support email, add scopes `email` and `profile`, then **Publish app** (in "Testing" mode only listed test users can sign in)
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID** → type **Web application**
+   - **Authorized JavaScript origins**: `https://<your-app>.onrender.com` (and `http://localhost:3000` for local dev)
+   - **Authorized redirect URIs**: `https://<your-app>.onrender.com/api/auth/callback/google` (and `http://localhost:3000/api/auth/callback/google`)
+4. Copy the client ID / secret into Render:
+
+| Key | Value |
+| --- | --- |
+| `AUTH_GOOGLE_ID` | OAuth client ID (`....apps.googleusercontent.com`) |
+| `AUTH_GOOGLE_SECRET` | OAuth client secret |
+
+For local dev put the same two lines in `.env.local`.
+
+Rules: a Google account whose email already has an account here signs in as that account (so admin-created staff / restaurant accounts can use Google too). Otherwise only `@spumail.net` addresses can sign up, always as students. Accounts created through Google have no password.
+
 ## 5. Seed the database
 
 The seed script (`npm run seed`) just needs `MONGODB_URI` in its environment — run it **from your own machine** against the same Atlas cluster (it already points there via your local `.env.local`), no need to run it on Render itself:

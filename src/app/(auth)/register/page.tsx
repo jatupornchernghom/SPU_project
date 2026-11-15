@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerSchema } from "@/lib/validations/auth";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 
 const EMAIL_DOMAIN = "@spumail.net";
 
@@ -71,6 +72,10 @@ export default function RegisterPage() {
       <div className="text-center">
         <h1 className="font-display text-xl font-bold text-foreground">สมัครสมาชิกใหม่</h1>
         <p className="text-sm text-muted-foreground mt-1">สำหรับนักศึกษา ม.ศรีปทุม (บัญชีบุคลากรและร้านค้า ติดต่อผู้ดูแลระบบ)</p>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <GoogleSignInButton label="สมัครด้วย Google (@spumail.net)" />
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
