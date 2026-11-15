@@ -11,8 +11,9 @@ export const registerSchema = z.object({
   name: z.string().min(2, "กรุณากรอกชื่อ-นามสกุล"),
   email: z
     .string()
-    .email("อีเมลไม่ถูกต้อง")
-    .refine((v) => v.toLowerCase().endsWith("@spumail.net"), "กรุณาใช้อีเมล @spumail.net"),
+    .trim()
+    .toLowerCase()
+    .regex(/^[a-z0-9._-]+@spumail\.net$/, "กรุณาใช้อีเมล @spumail.net (ใช้ได้เฉพาะ a-z, 0-9, . _ -)"),
   studentId: z
     .string()
     .optional()

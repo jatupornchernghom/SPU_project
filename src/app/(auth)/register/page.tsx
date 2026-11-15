@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerSchema } from "@/lib/validations/auth";
 
+const EMAIL_DOMAIN = "@spumail.net";
+
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -27,7 +29,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    const parsed = registerSchema.safeParse(form);
+    const parsed = registerSchema.safeParse({ ...form, email: `${form.email.trim()}${EMAIL_DOMAIN}` });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "ข้อมูลไม่ถูกต้อง");
       return;
@@ -84,16 +86,22 @@ export default function RegisterPage() {
           />
         </Field>
 
-        <Field label="อีเมล @spumail.net" id="email">
-          <Input
-            id="email"
-            type="email"
-            required
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            placeholder="yourname@spumail.net"
-            className="h-12"
-          />
+        <Field label="อีเมลมหาวิทยาลัย" id="email">
+          <div className="flex h-12 items-center rounded-lg border border-input focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
+            <input
+              id="email"
+              required
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
+              value={form.email}
+              // Users often paste their full address — keep only the part before "@".
+              onChange={(e) => setForm({ ...form, email: e.target.value.split("@")[0].replace(/\s/g, "") })}
+              placeholder="yourname"
+              className="h-full min-w-0 flex-1 bg-transparent px-2.5 text-base outline-none placeholder:text-muted-foreground md:text-sm"
+            />
+            <span className="pr-3 text-sm text-muted-foreground select-none">{EMAIL_DOMAIN}</span>
+          </div>
         </Field>
 
         <Field label="รหัสนักศึกษา/รหัสพนักงาน" id="studentId">
