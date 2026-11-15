@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { AppImage } from "@/components/ui/app-image";
 import Link from "next/link";
 import { Dices, Loader2, Plus, Star } from "lucide-react";
 import { useAddToCart } from "@/hooks/use-add-to-cart";
@@ -39,7 +39,7 @@ export default function RandomMenuPage() {
       {menu && (
         <div className="w-full max-w-sm bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
           <div className="relative w-full h-44 bg-muted">
-            {menu.image && <Image src={menu.image} alt={menu.name} fill className="object-cover" />}
+            {menu.image && <AppImage src={menu.image} alt={menu.name} fill className="object-cover" />}
           </div>
           <div className="p-4 flex flex-col gap-1 text-left">
             <h2 className="font-display text-lg font-bold text-foreground">{menu.name}</h2>

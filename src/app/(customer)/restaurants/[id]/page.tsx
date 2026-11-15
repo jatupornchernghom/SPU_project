@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { AppImage } from "@/components/ui/app-image";
 import { notFound } from "next/navigation";
 import { Clock, Star } from "lucide-react";
 import { getRestaurantById, listMenuForRestaurant } from "@/services/restaurant.service";
@@ -23,7 +23,7 @@ export default async function RestaurantDetailPage({ params }: Props) {
     <div className="flex flex-col pb-10">
       <div className="relative w-full h-48 bg-muted">
         {restaurant.image && (
-          <Image src={restaurant.image} alt={restaurant.name} fill className="object-cover" />
+          <AppImage src={restaurant.image} alt={restaurant.name} fill className="object-cover" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         <div className="absolute bottom-3 left-4 right-4 text-white">

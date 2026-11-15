@@ -1,10 +1,14 @@
 import { z } from "zod";
 import { isValidPromptPayId } from "@/lib/promptpay";
 
+// A link, or an uploaded picture stored inline as a data: URL (resized to
+// ≤1200px in the browser, so it stays well under this cap).
+const imageSchema = z.string().max(1_500_000, "รูปภาพใหญ่เกินไป");
+
 export const restaurantInputSchema = z.object({
   name: z.string().min(2),
   description: z.string(),
-  image: z.string(),
+  image: imageSchema,
   location: z.string().min(1),
   category: z.string().min(1),
   isOpen: z.boolean(),
@@ -28,7 +32,7 @@ export const menuInputSchema = z.object({
   restaurantId: z.string().min(1),
   name: z.string().min(2),
   description: z.string(),
-  image: z.string(),
+  image: imageSchema,
   price: z.number().min(0),
   category: z.string().min(1),
   rating: z.number().min(0).max(5),

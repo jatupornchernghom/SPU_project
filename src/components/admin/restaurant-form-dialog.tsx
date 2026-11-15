@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageField } from "@/components/admin/image-field";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { restaurantInputSchema } from "@/lib/validations/restaurant";
@@ -119,8 +120,8 @@ export function RestaurantFormDialog({
           <Field label="คำอธิบาย">
             <Textarea {...register("description")} rows={2} />
           </Field>
-          <Field label="URL รูปภาพ">
-            <Input {...register("image")} placeholder="https://..." />
+          <Field label="รูปภาพ" error={errors.image?.message}>
+            <ImageField value={watch("image")} onChange={(v) => setValue("image", v, { shouldDirty: true })} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="ที่ตั้ง" error={errors.location?.message}>

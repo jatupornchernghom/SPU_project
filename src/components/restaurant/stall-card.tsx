@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { AppImage } from "@/components/ui/app-image";
 import Link from "next/link";
 import { Clock, Star } from "lucide-react";
 import type { SerializedRestaurant } from "@/types";
@@ -13,7 +13,7 @@ export function StallCard({ restaurant }: { restaurant: SerializedRestaurant }) 
     >
       <div className="relative w-full h-36 bg-muted">
         {restaurant.image && (
-          <Image src={restaurant.image} alt={restaurant.name} fill className="object-cover" />
+          <AppImage src={restaurant.image} alt={restaurant.name} fill className="object-cover" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-card/90 backdrop-blur-md text-foreground shadow-sm">
