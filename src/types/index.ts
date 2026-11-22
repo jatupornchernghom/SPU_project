@@ -13,8 +13,19 @@ export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export const PAYMENT_STATUSES = ["PENDING", "PAID", "FAILED", "REFUNDED"] as const;
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
-export const PAYMENT_METHODS = ["QR_PAYMENT", "MOBILE_BANKING", "WALLET"] as const;
+/** Every method an order may carry, including retired ones kept for old orders. */
+export const PAYMENT_METHODS = ["QR_PAYMENT", "CASH", "MOBILE_BANKING", "WALLET"] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
+/** What customers can pick at checkout. */
+export const CHECKOUT_PAYMENT_METHODS = ["QR_PAYMENT", "CASH"] as const satisfies readonly PaymentMethod[];
+
+export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
+  QR_PAYMENT: "QR พร้อมเพย์",
+  CASH: "เงินสด",
+  MOBILE_BANKING: "Mobile Banking",
+  WALLET: "SPU Wallet",
+};
 
 export const NOTIFICATION_TYPES = [
   "ORDER_RECEIVED",
@@ -120,4 +131,16 @@ export type SerializedUser = {
   restaurantId?: string;
   restaurantName?: string;
   createdAt: string;
+};
+
+export const CHAT_SENDERS = ["CUSTOMER", "RESTAURANT"] as const;
+export type ChatSender = (typeof CHAT_SENDERS)[number];
+
+export type SerializedChatMessage = {
+  id: string;
+  orderId: string;
+  sender: ChatSender;
+  text: string;
+  createdAt: string;
+  readAt: string | null;
 };

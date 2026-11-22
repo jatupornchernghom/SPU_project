@@ -1,6 +1,6 @@
 import { ApiError, handleApiError, requireRole } from "@/lib/api";
-import { restaurantChannel, subscribe } from "@/lib/eventBus";
-import type { SerializedOrder } from "@/types";
+import { restaurantChannel, restaurantChatChannel, subscribe, subscribeChat } from "@/lib/eventBus";
+import type { SerializedChatMessage, SerializedOrder } from "@/types";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +17,7 @@ export async function GET(_request: Request, { params }: Params) {
 
     const encoder = new TextEncoder();
     let unsubscribe: (() => void) | null = null;
+    let unsubscribeChat: (() => void) | null = null;
     let heartbeat: ReturnType<typeof setInterval> | null = null;
 
     const stream = new ReadableStream({
@@ -27,6 +28,9 @@ export async function GET(_request: Request, { params }: Params) {
 
         controller.enqueue(encoder.encode(`event: ready\ndata: {}\n\n`));
         unsubscribe = subscribe(restaurantChannel(id), send);
+        unsubscribeChat = subscribeChat(restaurantChatChannel(id), (message: SerializedChatMessage) => {
+          controller.enqueue(encoder.encode(`event: chat\ndata: ${JSON.stringify(message)}\n\n`));
+        });
 
         heartbeat = setInterval(() => {
           controller.enqueue(encoder.encode(`: heartbeat\n\n`));
@@ -34,6 +38,7 @@ export async function GET(_request: Request, { params }: Params) {
       },
       cancel() {
         unsubscribe?.();
+        unsubscribeChat?.();
         if (heartbeat) clearInterval(heartbeat);
       },
     });

@@ -6,7 +6,6 @@ import { Order, type IOrderItem } from "@/models/Order";
 import { Queue } from "@/models/Queue";
 import { serializeOrder } from "@/lib/serialize";
 import { estimateWaitTime, generatePickupCode, getNextQueueNumber } from "@/services/queue.service";
-import { processPayment } from "@/services/payment.service";
 import { notify } from "@/services/notification.service";
 import { publishOrderUpdate } from "@/lib/eventBus";
 import type { CreateOrderInput } from "@/lib/validations/order";
@@ -68,21 +67,11 @@ export async function createOrder(userId: string, input: CreateOrderInput): Prom
   const subtotal = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
   const total = subtotal;
 
-  // QR_PAYMENT pays the restaurant's own PromptPay account directly — the
-  // platform has no way to verify that automatically, so the order is
-  // created with payment PENDING and the restaurant confirms receipt
-  // themselves (see confirmPayment()). Other methods go through the mock
-  // gateway as before.
-  let paymentStatus: PaymentStatus;
-  if (input.paymentMethod === "QR_PAYMENT") {
-    paymentStatus = "PENDING";
-  } else {
-    const payment = await processPayment({ amount: total, method: input.paymentMethod });
-    if (payment.status !== "PAID") {
-      throw new OrderError("การชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", 402);
-    }
-    paymentStatus = payment.status;
-  }
+  // Both methods pay the restaurant directly — a PromptPay transfer to its own
+  // account, or cash at the counter — so the app can't verify either one.
+  // Orders start PENDING: the restaurant confirms a transfer before cooking
+  // (confirmPayment), and a cash order is marked paid when it's picked up.
+  const paymentStatus: PaymentStatus = "PENDING";
 
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
@@ -157,11 +146,13 @@ export async function updateOrderStatus(
     throw new OrderError(`ไม่สามารถเปลี่ยนสถานะจาก ${order.status} เป็น ${nextStatus} ได้`, 400);
   }
 
-  if (nextStatus === "PREPARING" && order.paymentStatus === "PENDING") {
+  if (nextStatus === "PREPARING" && order.paymentMethod === "QR_PAYMENT" && order.paymentStatus === "PENDING") {
     throw new OrderError("กรุณายืนยันรับยอดชำระเงินก่อนเริ่มปรุงอาหาร", 400);
   }
 
   order.status = nextStatus;
+  // Cash is collected at the counter when the food is handed over.
+  if (nextStatus === "COMPLETED" && order.paymentMethod === "CASH") order.paymentStatus = "PAID";
   await order.save();
   await Queue.updateOne({ orderId: order._id }, { status: nextStatus });
   if (NOTIFICATION_TYPES.includes(nextStatus as (typeof NOTIFICATION_TYPES)[number])) {
@@ -177,9 +168,10 @@ export async function updateOrderStatus(
 
 /**
  * A customer cancelling their own order. Only allowed before the kitchen
- * starts (ORDER_RECEIVED). Mock-gateway payments are marked REFUNDED; a
+ * starts (ORDER_RECEIVED). Nothing has been paid for a cash order yet; a
  * PromptPay transfer the restaurant already confirmed can't be refunded by
- * the app, so that case has to go through the restaurant.
+ * the app, so that case has to go through the restaurant. (Orders from the
+ * retired mock gateway that were PAID are marked REFUNDED.)
  */
 export async function cancelOrderByCustomer(orderId: string, userId: string): Promise<SerializedOrder> {
   await connectToDatabase();

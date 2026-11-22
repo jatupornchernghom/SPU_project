@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Bell, CheckCircle2, ChefHat, PackageCheck, ScanLine, Wallet } from "lucide-react";
+import { Bell, CheckCircle2, ChefHat, MessageCircle, PackageCheck, ScanLine, Wallet } from "lucide-react";
 import { useRestaurantStream } from "@/hooks/use-restaurant-stream";
 import { StatusBadge } from "@/components/queue/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PickupQrScanner } from "@/components/restaurant/pickup-qr-scanner";
+import { ChatBadgeButton, RestaurantChatSheet } from "@/components/chat/order-chat";
 import { playNewOrderSound, unlockNewOrderSound } from "@/lib/new-order-sound";
 import type { OrderStatus, SerializedOrder } from "@/types";
 
@@ -36,11 +37,25 @@ const NEXT_ACTION: Partial<Record<OrderStatus, { label: string; next: OrderStatu
 export function DashboardBoard({
   restaurantId,
   initialOrders,
+  initialUnreadChats = {},
 }: {
   restaurantId: string;
   initialOrders: SerializedOrder[];
+  /** Unread customer chat messages per order id. */
+  initialUnreadChats?: Record<string, number>;
 }) {
   const [orders, setOrders] = useState(initialOrders);
+  const [unreadChats, setUnreadChats] = useState(initialUnreadChats);
+  const [chatOrder, setChatOrder] = useState<SerializedOrder | null>(null);
+  const chatOrderIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    chatOrderIdRef.current = chatOrder?.id ?? null;
+  }, [chatOrder]);
+
+  function openChat(order: SerializedOrder) {
+    setChatOrder(order);
+    setUnreadChats((prev) => ({ ...prev, [order.id]: 0 }));
+  }
   const [pickupCode, setPickupCode] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
@@ -78,6 +93,16 @@ export function DashboardBoard({
       const exists = prev.some((o) => o.id === updated.id);
       return exists ? prev.map((o) => (o.id === updated.id ? updated : o)) : [updated, ...prev];
     });
+  }, (message) => {
+    if (message.sender !== "CUSTOMER" || chatOrderIdRef.current === message.orderId) return;
+    setUnreadChats((prev) => ({ ...prev, [message.orderId]: (prev[message.orderId] ?? 0) + 1 }));
+    const order = ordersRef.current.find((o) => o.id === message.orderId);
+    playNewOrderSound();
+    toast(`ข้อความจากลูกค้า${order ? ` คิว ${order.queueNumber}` : ""}`, {
+      description: message.text,
+      icon: <MessageCircle size={16} />,
+      action: order ? { label: "เปิดแชท", onClick: () => openChat(order) } : undefined,
+    });
   });
 
   const activeOrders = useMemo(
@@ -89,11 +114,12 @@ export function DashboardBoard({
   );
 
   const pendingPaymentOrders = useMemo(
-    () => activeOrders.filter((o) => o.paymentStatus === "PENDING"),
+    // Only transfers need confirming before cooking; cash is collected at pickup.
+    () => activeOrders.filter((o) => o.paymentStatus === "PENDING" && o.paymentMethod === "QR_PAYMENT"),
     [activeOrders]
   );
   const inProgressOrders = useMemo(
-    () => activeOrders.filter((o) => o.paymentStatus !== "PENDING"),
+    () => activeOrders.filter((o) => !(o.paymentStatus === "PENDING" && o.paymentMethod === "QR_PAYMENT")),
     [activeOrders]
   );
 
@@ -146,7 +172,11 @@ export function DashboardBoard({
         toast.error(data.error ?? "ไม่พบรหัสนี้");
         return;
       }
-      toast.success(`รับออเดอร์ ${data.order.queueNumber} สำเร็จ`);
+      toast.success(
+        data.order.paymentMethod === "CASH"
+          ? `รับออเดอร์ ${data.order.queueNumber} สำเร็จ — เก็บเงินสด ฿${data.order.total}`
+          : `รับออเดอร์ ${data.order.queueNumber} สำเร็จ`
+      );
       setOrders((prev) => prev.map((o) => (o.id === data.order.id ? data.order : o)));
       setPickupCode("");
     } finally {
@@ -199,15 +229,18 @@ export function DashboardBoard({
                     </p>
                   </div>
                 </div>
-                <Button
-                  size="sm"
-                  disabled={confirmingPaymentId === order.id}
-                  onClick={() => handleConfirmPayment(order.id)}
-                  className="h-9 rounded-full gap-1 w-full sm:w-auto sm:flex-shrink-0"
-                >
-                  <Wallet size={14} />
-                  ยืนยันรับยอด
-                </Button>
+                <div className="flex items-center gap-2 sm:flex-shrink-0">
+                  <ChatBadgeButton unread={unreadChats[order.id] ?? 0} onClick={() => openChat(order)} />
+                  <Button
+                    size="sm"
+                    disabled={confirmingPaymentId === order.id}
+                    onClick={() => handleConfirmPayment(order.id)}
+                    className="h-9 rounded-full gap-1 flex-1 sm:flex-none"
+                  >
+                    <Wallet size={14} />
+                    ยืนยันรับยอด
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -244,11 +277,15 @@ export function DashboardBoard({
                       <p className="text-xs text-muted-foreground">
                         {order.orderNumber} • รับเวลา{" "}
                         {order.pickupTime === "ASAP" ? "เร็วที่สุด" : order.pickupTime} • ฿{order.total}
+                        {order.paymentMethod === "CASH" && order.paymentStatus === "PENDING" && (
+                          <span className="ml-1 font-semibold text-status-waiting-fg">• เงินสด เก็บเงินตอนรับ</span>
+                        )}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between sm:justify-end gap-2 sm:flex-shrink-0">
                     <StatusBadge status={order.status} />
+                    <ChatBadgeButton unread={unreadChats[order.id] ?? 0} onClick={() => openChat(order)} />
                     {action && (
                       <Button
                         size="sm"
@@ -266,6 +303,8 @@ export function DashboardBoard({
           </div>
         )}
       </section>
+
+      <RestaurantChatSheet order={chatOrder} onOpenChange={(open) => !open && setChatOrder(null)} />
     </div>
   );
 }

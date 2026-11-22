@@ -3,26 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { QrCode, Smartphone, Wallet } from "lucide-react";
+import { Banknote, QrCode } from "lucide-react";
 import { cn } from "cn";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartHydrated } from "@/hooks/use-cart-hydrated";
 import { Button } from "@/components/ui/button";
 import { PromptPayQr } from "@/components/order/promptpay-qr";
 import { PICKUP_TIME_OPTIONS } from "@/lib/validations/order";
-import type { PaymentMethod, SerializedRestaurant } from "@/types";
+import type { CHECKOUT_PAYMENT_METHODS, SerializedRestaurant } from "@/types";
 
-const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; icon: typeof QrCode }[] = [
-  { value: "QR_PAYMENT", label: "QR พร้อมเพย์", icon: QrCode },
-  { value: "MOBILE_BANKING", label: "Mobile Banking", icon: Smartphone },
-  { value: "WALLET", label: "SPU Wallet", icon: Wallet },
+type CheckoutMethod = (typeof CHECKOUT_PAYMENT_METHODS)[number];
+
+const PAYMENT_OPTIONS: { value: CheckoutMethod; label: string; hint: string; icon: typeof QrCode }[] = [
+  { value: "QR_PAYMENT", label: "QR พร้อมเพย์", hint: "โอนเข้าบัญชีร้านตอนนี้ ร้านยืนยันยอดแล้วเริ่มทำ", icon: QrCode },
+  { value: "CASH", label: "เงินสด", hint: "จ่ายที่ร้านตอนรับอาหาร", icon: Banknote },
 ];
 
 export default function CheckoutPage() {
   const router = useRouter();
   const hydrated = useCartHydrated();
   const [pickupTime, setPickupTime] = useState<(typeof PICKUP_TIME_OPTIONS)[number]>("ASAP");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("QR_PAYMENT");
+  const [paymentMethod, setPaymentMethod] = useState<CheckoutMethod>("QR_PAYMENT");
   const [submitting, setSubmitting] = useState(false);
   const { items, restaurantId, restaurantName, subtotal, clear } = useCartStore();
   const justOrderedRef = useRef(false);
@@ -66,7 +67,7 @@ export default function CheckoutPage() {
 
       justOrderedRef.current = true;
       clear();
-      toast.success("ชำระเงินสำเร็จ! กำลังนำไปหน้าติดตามคิว...");
+      toast.success("สั่งอาหารสำเร็จ! กำลังไปหน้าติดตามคิว...");
       router.push(`/orders/${data.order.id}`);
     } catch {
       toast.error("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่อีกครั้ง");
@@ -125,7 +126,7 @@ export default function CheckoutPage() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide">
-          ช่องทางชำระเงิน (Mock)
+          ช่องทางชำระเงิน
         </h2>
         <div className="flex flex-col gap-2">
           {PAYMENT_OPTIONS.map((option) => {
@@ -137,12 +138,15 @@ export default function CheckoutPage() {
                 type="button"
                 onClick={() => setPaymentMethod(option.value)}
                 className={cn(
-                  "h-14 px-4 rounded-xl border flex items-center gap-3 transition-colors",
+                  "min-h-14 px-4 py-2 rounded-xl border flex items-center gap-3 text-left transition-colors",
                   active ? "bg-primary/5 border-primary" : "bg-card border-border"
                 )}
               >
                 <Icon size={20} className={active ? "text-primary" : "text-muted-foreground"} />
-                <span className="font-semibold text-foreground">{option.label}</span>
+                <span className="flex flex-col">
+                  <span className="font-semibold text-foreground">{option.label}</span>
+                  <span className="text-xs text-muted-foreground">{option.hint}</span>
+                </span>
                 {active && <span className="ml-auto text-primary text-xs font-bold">เลือกแล้ว</span>}
               </button>
             );
@@ -164,7 +168,11 @@ export default function CheckoutPage() {
             disabled={submitting}
             className="h-12 w-full rounded-full text-base"
           >
-            {submitting ? "กำลังดำเนินการ..." : `ยืนยันและชำระเงิน ฿${subtotal()}`}
+            {submitting
+              ? "กำลังดำเนินการ..."
+              : paymentMethod === "CASH"
+                ? `ยืนยันออเดอร์ (จ่ายเงินสด ฿${subtotal()})`
+                : `ยืนยันและชำระเงิน ฿${subtotal()}`}
           </Button>
         </div>
       </div>

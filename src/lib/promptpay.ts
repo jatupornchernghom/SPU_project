@@ -5,10 +5,9 @@
  * `PromptPayQr`). Scanning it with any Thai banking app shows the configured
  * recipient and the exact order amount.
  *
- * This only generates the payload — it does not confirm payment. Confirming
- * an order still goes through `payment.service.ts`'s mock flow, same as
- * before. Swap that service for a real gateway (with a webhook) once one is
- * wired up, without touching this file.
+ * This only generates the payload — it does not confirm payment. The
+ * restaurant confirms the transfer arrived (`confirmPayment` in
+ * order.service) before it starts cooking.
  */
 
 function tlv(id: string, value: string): string {

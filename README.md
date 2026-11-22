@@ -1,6 +1,6 @@
 # SkipQ
 
-Pre-order food & live queue management for Sripatum University canteens. Students and staff browse canteen menus, pre-order, pay (mock), and track their order live from "Order Received" to "Ready for Pickup" with a QR code / pickup code — no physical queueing.
+Pre-order food & live queue management for Sripatum University canteens. Students and staff browse canteen menus, pre-order, pay by PromptPay QR or cash, chat with the restaurant, and track their order live from "Order Received" to "Ready for Pickup" with a QR code / pickup code — no physical queueing.
 
 Built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui, MongoDB (Mongoose), Auth.js v5, and Server-Sent Events for real-time updates.
 
@@ -97,12 +97,13 @@ scripts/seed.ts                 database seed script
 | `POST /api/restaurants/:id/pickup` | Complete an order by pickup code (staff/admin) |
 | `POST /api/menu` · `PATCH/DELETE /api/menu/:id` | Menu CRUD (admin) |
 | `GET /api/menu/random` | Random menu item from an open restaurant |
-| `POST /api/orders` | Create an order (validates stock, runs mock payment, generates queue number + pickup code) |
+| `POST /api/orders` | Create an order — QR or cash (validates stock, generates queue number + pickup code) |
 | `GET /api/orders` | List the current user's orders (or `?restaurantId=` for staff/admin) |
 | `GET /api/orders/:id` | Order detail (owner, assigned restaurant staff, or admin only) |
 | `PATCH /api/orders/:id/status` | Advance order status (staff/admin) |
 | `PATCH /api/orders/:id/payment` | Confirm a PromptPay transfer was received (staff/admin) |
-| `POST /api/orders/:id/cancel` | Customer cancels their own order before cooking starts (mock payments are refunded) |
+| `POST /api/orders/:id/cancel` | Customer cancels their own order before cooking starts |
+| `GET/POST /api/orders/:id/chat` · `POST …/chat/read` · `GET …/chat/stream` | Customer ↔ restaurant chat for an order: history, send, mark read, **SSE** live messages (order owner and that restaurant's staff; admins read-only) |
 | `GET/POST/DELETE /api/push` | VAPID public key · save / remove this device's push subscription |
 | `POST /api/orders/:id/review` | Rate a completed order 1–5 stars + comment (order owner, once) |
 | `PATCH /api/restaurants/:id/status` | Open / close the store (its own staff, or admin) |
@@ -134,6 +135,6 @@ See **[docs/deploy-render.md](docs/deploy-render.md)** for deploying a demo inst
 
 ## Notes
 
-- **Mock payment**: `src/services/payment.service.ts` simulates a gateway (with a small random failure rate) behind a single function, so a real provider can be dropped in later without touching callers. The PromptPay QR (above) is generated independently and doesn't change this.
+- **Payment**: customers pay the restaurant directly — **PromptPay QR** (transfer to the restaurant's own account; staff confirm the transfer before cooking) or **cash** at the counter (cooking starts right away; the order is marked paid when it's picked up). The app never holds money, so there is no payment gateway.
 - **Design system**: colors, type scale, and component patterns are ported from `design-reference/spu_skipq_pulse/DESIGN.md` (a Google Stitch export) into `src/app/globals.css` and Tailwind's `@theme` tokens.
 - `npm run lint` and `npm run build` are the fastest way to verify changes compile cleanly.

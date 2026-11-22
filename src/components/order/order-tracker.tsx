@@ -7,8 +7,9 @@ import { StatusTimeline } from "@/components/queue/status-timeline";
 import { StatusBadge } from "@/components/queue/status-badge";
 import { ReviewForm } from "@/components/review/review-form";
 import { CancelOrderButton } from "@/components/order/cancel-order-button";
+import { CustomerChatButton } from "@/components/chat/order-chat";
 import { PushNotificationButton } from "@/components/notifications/push-notification-button";
-import type { SerializedOrder, SerializedReview } from "@/types";
+import { PAYMENT_METHOD_LABEL, type SerializedOrder, type SerializedReview } from "@/types";
 
 export function OrderTracker({
   order: initialOrder,
@@ -34,7 +35,9 @@ export function OrderTracker({
       {order.paymentStatus === "PENDING" && order.status !== "CANCELLED" && (
         <div className="flex items-center gap-2 rounded-xl bg-status-waiting-bg px-4 py-3 text-sm font-semibold text-status-waiting-fg">
           <Clock size={16} className="flex-shrink-0" />
-          รอร้านยืนยันรับยอดโอน — หากโอนแล้วแต่สถานะยังไม่เปลี่ยน รอสักครู่หรือแจ้งพนักงานหน้าร้าน
+          {order.paymentMethod === "CASH"
+            ? `ชำระเงินสด ฿${order.total.toLocaleString("th-TH")} ที่ร้านตอนรับอาหาร`
+            : "รอร้านยืนยันรับยอดโอน — หากโอนแล้วแต่สถานะยังไม่เปลี่ยน รอสักครู่หรือแจ้งพนักงานหน้าร้าน"}
         </div>
       )}
 
@@ -42,11 +45,13 @@ export function OrderTracker({
         <PushNotificationButton compact />
       )}
 
-      {canReview &&
-        order.status === "ORDER_RECEIVED" &&
-        !(order.paymentMethod === "QR_PAYMENT" && order.paymentStatus === "PAID") && (
-          <CancelOrderButton order={order} />
-        )}
+      {canReview && (
+        <div className="flex flex-wrap gap-2 [&>*]:flex-1">
+          <CustomerChatButton orderId={order.id} restaurantName={order.restaurantName} queueNumber={order.queueNumber} />
+          {order.status === "ORDER_RECEIVED" &&
+            !(order.paymentMethod === "QR_PAYMENT" && order.paymentStatus === "PAID") && <CancelOrderButton order={order} />}
+        </div>
+      )}
 
       {order.status === "CANCELLED" && order.paymentStatus === "REFUNDED" && (
         <div className="rounded-xl bg-muted px-4 py-3 text-sm font-semibold text-muted-foreground text-center">
@@ -132,7 +137,7 @@ export function OrderTracker({
       <div className="text-xs text-muted-foreground flex flex-col gap-0.5">
         <span>เวลารับอาหาร: {order.pickupTime === "ASAP" ? "เร็วที่สุด" : order.pickupTime}</span>
         <span>
-          ช่องทางชำระเงิน: {order.paymentMethod.replace("_", " ")} •{" "}
+          ช่องทางชำระเงิน: {PAYMENT_METHOD_LABEL[order.paymentMethod]} •{" "}
           {order.paymentStatus === "PENDING" ? "รอยืนยันยอด" : "ชำระเงินแล้ว"}
         </span>
       </div>

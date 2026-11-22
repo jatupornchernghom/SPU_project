@@ -1,5 +1,5 @@
 import { EventEmitter } from "node:events";
-import type { SerializedOrder } from "@/types";
+import type { SerializedChatMessage, SerializedOrder } from "@/types";
 
 /**
  * In-memory pub/sub for pushing order-status changes to open SSE connections.
@@ -30,6 +30,26 @@ export function publishOrderUpdate(order: SerializedOrder) {
 }
 
 export function subscribe(channel: string, listener: (order: SerializedOrder) => void) {
+  bus.on(channel, listener);
+  return () => bus.off(channel, listener);
+}
+
+// Chat: one channel per order (the open conversation) and one per restaurant
+// (unread badges / alerts on the staff dashboard).
+export function chatChannel(orderId: string) {
+  return `chat:${orderId}`;
+}
+
+export function restaurantChatChannel(restaurantId: string) {
+  return `restaurant-chat:${restaurantId}`;
+}
+
+export function publishChatMessage(restaurantId: string, message: SerializedChatMessage) {
+  bus.emit(chatChannel(message.orderId), message);
+  bus.emit(restaurantChatChannel(restaurantId), message);
+}
+
+export function subscribeChat(channel: string, listener: (message: SerializedChatMessage) => void) {
   bus.on(channel, listener);
   return () => bus.off(channel, listener);
 }

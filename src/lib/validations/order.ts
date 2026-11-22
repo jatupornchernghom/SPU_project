@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ORDER_STATUSES, PAYMENT_METHODS } from "@/types";
+import { CHECKOUT_PAYMENT_METHODS, ORDER_STATUSES } from "@/types";
 
 /** Per-dish cap. The cart enforces the same number so checkout never fails on it. */
 export const MAX_ITEM_QUANTITY = 50;
@@ -22,7 +22,7 @@ export const createOrderSchema = z.object({
     )
     .min(1, "ตะกร้าว่างเปล่า"),
   pickupTime: z.enum(PICKUP_TIME_OPTIONS),
-  paymentMethod: z.enum(PAYMENT_METHODS),
+  paymentMethod: z.enum(CHECKOUT_PAYMENT_METHODS, "กรุณาเลือกชำระด้วย QR หรือเงินสด"),
 });
 
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
