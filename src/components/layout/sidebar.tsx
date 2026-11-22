@@ -10,6 +10,11 @@ export type SidebarItem = { href: string; label: string; icon: LucideIcon };
 
 export function Sidebar({ title, items }: { title: string; items: SidebarItem[] }) {
   const pathname = usePathname();
+  // The deepest matching item wins, so a section root ("/admin") isn't also
+  // highlighted on its sub-pages ("/admin/users").
+  const activeHref = items
+    .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+    .reduce<string | null>((best, item) => (!best || item.href.length > best.length ? item.href : best), null);
 
   return (
     <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-border bg-card">
@@ -21,7 +26,7 @@ export function Sidebar({ title, items }: { title: string; items: SidebarItem[] 
       </div>
       <nav className="flex-1 flex flex-col gap-1 p-3">
         {items.map((item) => {
-          const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const active = item.href === activeHref;
           const Icon = item.icon;
           return (
             <Link

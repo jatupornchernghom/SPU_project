@@ -8,6 +8,11 @@ import type { SidebarItem } from "@/components/layout/sidebar";
 
 export function MobileStaffHeader({ title, items }: { title: string; items: SidebarItem[] }) {
   const pathname = usePathname();
+  // The deepest matching item wins, so a section root ("/admin") isn't also
+  // highlighted on its sub-pages ("/admin/users").
+  const activeHref = items
+    .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+    .reduce<string | null>((best, item) => (!best || item.href.length > best.length ? item.href : best), null);
 
   return (
     <div className="md:hidden sticky top-0 z-40 bg-card border-b border-border">
@@ -20,7 +25,7 @@ export function MobileStaffHeader({ title, items }: { title: string; items: Side
       {items.length > 1 && (
         <nav className="flex border-t border-border">
           {items.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active = item.href === activeHref;
             const Icon = item.icon;
             return (
               <Link

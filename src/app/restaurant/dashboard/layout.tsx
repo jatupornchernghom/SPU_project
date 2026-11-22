@@ -1,11 +1,12 @@
 "use client";
 
-import { History, LayoutDashboard } from "lucide-react";
+import { History, LayoutDashboard, UtensilsCrossed } from "lucide-react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileStaffHeader } from "@/components/layout/mobile-staff-header";
 
 const ITEMS = [
   { href: "/restaurant/dashboard", label: "คิวออเดอร์", icon: LayoutDashboard },
+  { href: "/restaurant/dashboard/menu", label: "เมนูของร้าน", icon: UtensilsCrossed },
   { href: "/restaurant/dashboard/history", label: "สรุป/ประวัติ", icon: History },
 ];
 

@@ -95,7 +95,7 @@ scripts/seed.ts                 database seed script
 | `GET /api/restaurants/:id/queue` | Active queue for a restaurant (staff/admin) |
 | `GET /api/restaurants/:id/stream` | **SSE** — live order updates for the staff dashboard |
 | `POST /api/restaurants/:id/pickup` | Complete an order by pickup code (staff/admin) |
-| `POST /api/menu` · `PATCH/DELETE /api/menu/:id` | Menu CRUD (admin) |
+| `POST /api/menu` · `PATCH/DELETE /api/menu/:id` | Menu CRUD — admins for any restaurant, restaurant staff for their own (`/restaurant/dashboard/menu`: add / edit / sold-out switch / delete) |
 | `GET /api/menu/random` | Random menu item from an open restaurant |
 | `POST /api/orders` | Create an order — QR or cash (validates stock, generates queue number + pickup code) |
 | `GET /api/orders` | List the current user's orders (or `?restaurantId=` for staff/admin) |

@@ -7,16 +7,27 @@ import { serializeMenu } from "@/lib/serialize";
 
 type Params = { params: Promise<{ id: string }> };
 
+/** Admins manage every menu; restaurant staff only their own restaurant's. */
+async function findEditableMenu(id: string, user: { role: string; restaurantId?: string }) {
+  await connectToDatabase();
+  const menu = await Menu.findById(id);
+  if (!menu) throw new ApiError("ไม่พบเมนูนี้", 404);
+  if (user.role === "RESTAURANT_STAFF" && menu.restaurantId.toString() !== user.restaurantId) {
+    throw new ApiError("คุณไม่มีสิทธิ์แก้ไขเมนูของร้านอื่น", 403);
+  }
+  return menu;
+}
+
 export async function PATCH(request: Request, { params }: Params) {
   try {
-    await requireRole(["ADMIN"]);
+    const session = await requireRole(["ADMIN", "RESTAURANT_STAFF"]);
     const { id } = await params;
-    const body = await request.json();
-    const input = menuUpdateSchema.parse(body);
+    const input = menuUpdateSchema.parse(await request.json());
+    if (session.user.role === "RESTAURANT_STAFF") delete input.rating;
 
-    await connectToDatabase();
-    const menu = await Menu.findByIdAndUpdate(id, input, { new: true });
-    if (!menu) throw new ApiError("ไม่พบเมนูนี้", 404);
+    const menu = await findEditableMenu(id, session.user);
+    menu.set(input);
+    await menu.save();
 
     return NextResponse.json({ menu: serializeMenu(menu) });
   } catch (error) {
@@ -26,12 +37,11 @@ export async function PATCH(request: Request, { params }: Params) {
 
 export async function DELETE(_request: Request, { params }: Params) {
   try {
-    await requireRole(["ADMIN"]);
+    const session = await requireRole(["ADMIN", "RESTAURANT_STAFF"]);
     const { id } = await params;
 
-    await connectToDatabase();
-    const menu = await Menu.findByIdAndDelete(id);
-    if (!menu) throw new ApiError("ไม่พบเมนูนี้", 404);
+    const menu = await findEditableMenu(id, session.user);
+    await menu.deleteOne();
 
     return NextResponse.json({ success: true });
   } catch (error) {

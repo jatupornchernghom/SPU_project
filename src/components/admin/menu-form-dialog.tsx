@@ -36,10 +36,13 @@ export function MenuFormDialog({
   menu,
   restaurants,
   onSaved,
+  ownRestaurant = false,
 }: {
   menu?: SerializedMenu;
   restaurants: SerializedRestaurant[];
   onSaved: (menu: SerializedMenu) => void;
+  /** Restaurant staff editing their own menu: no restaurant picker, no rating field. */
+  ownRestaurant?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const defaults: FormValues = {
@@ -107,7 +110,7 @@ export function MenuFormDialog({
           <DialogTitle>{menu ? "แก้ไขเมนู" : "เพิ่มเมนู"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-          {!menu && (
+          {!menu && !ownRestaurant && (
             <div className="flex flex-col gap-1">
               <Label>ร้านอาหาร</Label>
               <Select
@@ -148,9 +151,11 @@ export function MenuFormDialog({
             <Field label="เวลาเตรียม (นาที)" error={errors.preparationTime?.message}>
               <Input type="number" {...register("preparationTime", { valueAsNumber: true })} />
             </Field>
-            <Field label="คะแนน">
-              <Input type="number" step="0.1" {...register("rating", { valueAsNumber: true })} />
-            </Field>
+            {!ownRestaurant && (
+              <Field label="คะแนน">
+                <Input type="number" step="0.1" {...register("rating", { valueAsNumber: true })} />
+              </Field>
+            )}
           </div>
           <div className="flex items-center justify-between">
             <Label>มีขายอยู่</Label>
