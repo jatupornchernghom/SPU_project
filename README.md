@@ -1,4 +1,4 @@
-# SPU SkipQ
+# SkipQ
 
 Pre-order food & live queue management for Sripatum University canteens. Students and staff browse canteen menus, pre-order, pay (mock), and track their order live from "Order Received" to "Ready for Pickup" with a QR code / pickup code — no physical queueing.
 
@@ -23,6 +23,8 @@ cp .env.example .env.local
 | `MONGODB_URI` | MongoDB Atlas (or local MongoDB) connection string, including a database name, e.g. `mongodb+srv://user:pass@cluster.mongodb.net/spu-skipq` |
 | `AUTH_SECRET` | Secret used by Auth.js to sign session JWTs. Generate one with `npx auth secret` |
 | `NEXTAUTH_URL` | Base URL of the app, `http://localhost:3000` in development |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | *(optional)* Google OAuth client for "Sign in with Google" (`@spumail.net` only). The button is hidden when unset — setup steps in [docs/deploy-render.md](docs/deploy-render.md) |
+| `TZ` | *(production)* `Asia/Bangkok`, so daily queue / order numbers reset at Thai midnight |
 
 ## 3. MongoDB Setup
 
@@ -54,8 +56,10 @@ All demo accounts use the password **`password123`**.
 | --- | --- | --- |
 | `student@spumail.net` | STUDENT | Browse, order, track queue |
 | `staff@spumail.net` | STAFF | Same customer-facing access as a student |
-| `admin@spumail.net` | ADMIN | `/admin` — restaurants, menu, orders, stats |
+| `admin@spumail.net` | ADMIN | `/admin` — restaurants, menu, orders, stats, user accounts |
 | `restaurant@spumail.net` | RESTAURANT_STAFF | `/restaurant/dashboard` — scoped to "ร้านกะเพรา SPU" |
+
+Self sign-up (`/register`) creates **student** accounts with an `@spumail.net` address only. Staff, restaurant and admin accounts are created by an admin at `/admin/users`; a restaurant account is tied to one restaurant.
 
 ## 7. Project Structure
 
@@ -96,9 +100,13 @@ scripts/seed.ts                 database seed script
 | `GET /api/orders` | List the current user's orders (or `?restaurantId=` for staff/admin) |
 | `GET /api/orders/:id` | Order detail (owner, assigned restaurant staff, or admin only) |
 | `PATCH /api/orders/:id/status` | Advance order status (staff/admin) |
+| `PATCH /api/orders/:id/payment` | Confirm a PromptPay transfer was received (staff/admin) |
+| `POST /api/orders/:id/review` | Rate a completed order 1–5 stars + comment (order owner, once) |
+| `PATCH /api/restaurants/:id/status` | Open / close the store (its own staff, or admin) |
+| `GET/POST /api/admin/users` · `DELETE /api/admin/users/:id` | List / create staff, restaurant and admin accounts (admin) |
 | `GET /api/orders/:id/stream` | **SSE** — live status updates for the customer's tracker |
 | `GET/PATCH /api/notifications`, `/api/profile` | Notifications & profile settings |
-| `POST /api/auth/register` | Create an account |
+| `POST /api/auth/register` | Create a student account (`@spumail.net`) |
 | `GET/POST /api/auth/[...nextauth]` | Auth.js session endpoints |
 
 Business logic lives in `src/services/*` and is shared between these route handlers — nothing is duplicated between the API layer and the pages that call the services directly.

@@ -6,7 +6,9 @@ import { AppImage } from "@/components/ui/app-image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const MAX_SIDE = 1200;
+// Food photos are shown at most ~700px wide; larger uploads only bloat every
+// page that lists them and the cart kept in localStorage.
+const MAX_SIDE = 800;
 
 /**
  * Uploaded files are resized in the browser and stored as a data: URL in the
@@ -21,9 +23,9 @@ async function fileToDataUrl(file: File): Promise<string> {
   canvas.height = Math.round(bitmap.height * scale);
   canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
-  const webp = canvas.toDataURL("image/webp", 0.82);
+  const webp = canvas.toDataURL("image/webp", 0.78);
   // Safari can't encode WebP and silently falls back to PNG — use JPEG instead.
-  return webp.startsWith("data:image/webp") ? webp : canvas.toDataURL("image/jpeg", 0.85);
+  return webp.startsWith("data:image/webp") ? webp : canvas.toDataURL("image/jpeg", 0.8);
 }
 
 export function ImageField({ value, onChange }: { value: string; onChange: (value: string) => void }) {

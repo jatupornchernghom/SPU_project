@@ -9,6 +9,9 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.18.0
+      # Render runs in UTC; daily queue / order numbers should reset at Thai midnight.
+      - key: TZ
+        value: Asia/Bangkok
       - key: MONGODB_URI
         sync: false
       - key: AUTH_SECRET

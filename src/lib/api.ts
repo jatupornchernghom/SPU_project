@@ -39,6 +39,10 @@ export function handleApiError(error: unknown) {
       { status: 400 }
     );
   }
+  // Mongoose throws CastError for a malformed id in the URL, e.g. /api/restaurants/abc.
+  if ((error as { name?: string })?.name === "CastError") {
+    return NextResponse.json({ error: "ไม่พบข้อมูลที่ต้องการ" }, { status: 404 });
+  }
   const err = error as { status?: number; message?: string };
   if (typeof err?.status === "number") {
     return NextResponse.json({ error: err.message ?? "เกิดข้อผิดพลาด" }, { status: err.status });

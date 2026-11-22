@@ -94,8 +94,7 @@ export async function createOrder(userId: string, input: CreateOrderInput): Prom
     Order.countDocuments({ createdAt: { $gte: startOfToday } }),
   ]);
 
-  const order = await Order.create({
-    orderNumber: todayOrderNumber(ordersTodayCount + 1),
+  const fields = {
     userId,
     restaurantId: restaurant._id,
     items: orderItems,
@@ -104,11 +103,24 @@ export async function createOrder(userId: string, input: CreateOrderInput): Prom
     pickupTime: input.pickupTime,
     queueNumber,
     pickupCode,
-    status: "ORDER_RECEIVED",
+    status: "ORDER_RECEIVED" as const,
     paymentStatus,
     paymentMethod: input.paymentMethod,
     estimatedWaitTime,
-  });
+  };
+
+  // Two checkouts at the same moment count the same number of orders today
+  // and would both claim the same (unique) orderNumber — take the next one.
+  let order;
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      order = await Order.create({ ...fields, orderNumber: todayOrderNumber(ordersTodayCount + 1 + attempt) });
+      break;
+    } catch (error) {
+      const duplicate = (error as { code?: number }).code === 11000;
+      if (!duplicate || attempt >= 4) throw error;
+    }
+  }
 
   await Queue.create({
     restaurantId: restaurant._id,

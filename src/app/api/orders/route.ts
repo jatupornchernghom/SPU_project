@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createOrderSchema } from "@/lib/validations/order";
-import { handleApiError, requireRole, requireSession } from "@/lib/api";
+import { ApiError, handleApiError, requireRole, requireSession } from "@/lib/api";
 import { createOrder, listOrdersForRestaurant, listOrdersForUser } from "@/services/order.service";
 
 export async function GET(request: Request) {
@@ -11,6 +11,9 @@ export async function GET(request: Request) {
 
     if (restaurantId) {
       await requireRole(["RESTAURANT_STAFF", "ADMIN"]);
+      if (session.user.role === "RESTAURANT_STAFF" && session.user.restaurantId !== restaurantId) {
+        throw new ApiError("คุณไม่มีสิทธิ์เข้าถึงคำสั่งซื้อของร้านนี้", 403);
+      }
       const orders = await listOrdersForRestaurant(restaurantId);
       return NextResponse.json({ orders });
     }
