@@ -7,7 +7,7 @@ import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import type { ChatSender, SerializedChatMessage } from "@/types";
+import type { ChatSender, ChatSummary, SerializedChatMessage } from "@/types";
 
 const QUICK_REPLIES: Record<ChatSender, string[]> = {
   CUSTOMER: ["กำลังเดินไปรับ", "ขอไม่ใส่ผักนะ", "ขอช้อนส้อมด้วย", "ขอบคุณครับ/ค่ะ"],
@@ -260,15 +260,32 @@ function RestaurantThread({ orderId }: { orderId: string }) {
   return <ChatThread chat={chat} emptyText="ยังไม่มีข้อความ — ส่งข้อความหาลูกค้าได้เลย" />;
 }
 
-/** Chat button with an unread badge for a dashboard order row. */
-export function ChatBadgeButton({ unread, onClick }: { unread: number; onClick: () => void }) {
+/**
+ * Chat button for a dashboard order row: solid pink with a pulsing count when
+ * the customer wrote something unread, tinted pink once there's a conversation,
+ * plain otherwise.
+ */
+export function ChatBadgeButton({ chat, onClick }: { chat?: ChatSummary; onClick: () => void }) {
+  const unread = chat?.unread ?? 0;
+  const hasMessages = (chat?.total ?? 0) > 0;
+
   return (
-    <Button size="sm" variant="outline" onClick={onClick} aria-label={unread ? `แชท (${unread} ข้อความใหม่)` : "แชท"} className="h-9 rounded-full gap-1 relative">
-      <MessageCircle size={14} />
-      แชท
+    <Button
+      size="sm"
+      variant={unread > 0 ? "default" : "outline"}
+      onClick={onClick}
+      aria-label={unread ? `แชท (${unread} ข้อความใหม่)` : hasMessages ? "แชท (มีข้อความ)" : "แชท"}
+      className={cn(
+        "h-9 rounded-full gap-1 relative",
+        unread === 0 && hasMessages && "border-primary/50 bg-primary/10 text-primary hover:bg-primary/15"
+      )}
+    >
+      <MessageCircle size={14} className={unread > 0 ? "fill-primary-foreground/30" : hasMessages ? "fill-primary/20" : ""} />
+      {unread > 0 ? `ข้อความใหม่ ${unread}` : "แชท"}
       {unread > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
-          {unread}
+        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 motion-safe:animate-ping" />
+          <span className="relative inline-flex h-3 w-3 rounded-full bg-primary border-2 border-background" />
         </span>
       )}
     </Button>

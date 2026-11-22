@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { listOrdersForRestaurant } from "@/services/order.service";
 import { getRestaurantById } from "@/services/restaurant.service";
-import { unreadChatCountsForRestaurant } from "@/services/chat.service";
+import { chatSummariesForRestaurant } from "@/services/chat.service";
 import { DashboardBoard } from "@/components/restaurant/dashboard-board";
 import { StoreOpenToggle } from "@/components/restaurant/store-open-toggle";
 
@@ -17,10 +17,10 @@ export default async function RestaurantDashboardPage() {
     );
   }
 
-  const [orders, restaurant, unreadChats] = await Promise.all([
+  const [orders, restaurant, chats] = await Promise.all([
     listOrdersForRestaurant(restaurantId),
     getRestaurantById(restaurantId),
-    unreadChatCountsForRestaurant(restaurantId),
+    chatSummariesForRestaurant(restaurantId),
   ]);
 
   return (
@@ -29,7 +29,7 @@ export default async function RestaurantDashboardPage() {
         <h1 className="font-display text-xl font-bold text-foreground">แดชบอร์ดร้านอาหาร</h1>
         {restaurant && <StoreOpenToggle restaurantId={restaurantId} initialIsOpen={restaurant.isOpen} />}
       </div>
-      <DashboardBoard restaurantId={restaurantId} initialOrders={orders} initialUnreadChats={unreadChats} />
+      <DashboardBoard restaurantId={restaurantId} initialOrders={orders} initialChats={chats} />
     </div>
   );
 }

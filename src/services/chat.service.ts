@@ -7,7 +7,7 @@ import { User } from "@/models/User";
 import { publishChatMessage } from "@/lib/eventBus";
 import { sendPushToUser } from "@/lib/web-push";
 import { OrderError } from "@/services/order.service";
-import type { ChatSender, SerializedChatMessage, UserRole } from "@/types";
+import type { ChatSender, ChatSummary, SerializedChatMessage, UserRole } from "@/types";
 
 type Actor = { id: string; role: UserRole; restaurantId?: string };
 
@@ -92,12 +92,23 @@ export async function markChatRead(orderId: string, actor: Actor) {
   await ChatMessage.updateMany({ orderId, sender: { $ne: side }, readAt: null }, { readAt: new Date() });
 }
 
-/** Unread customer messages per order, for a restaurant's dashboard badges. */
-export async function unreadChatCountsForRestaurant(restaurantId: string): Promise<Record<string, number>> {
+/**
+ * Per order: customer messages the restaurant hasn't read, and whether there's
+ * a conversation at all — for the dashboard's chat buttons.
+ */
+export async function chatSummariesForRestaurant(restaurantId: string): Promise<Record<string, ChatSummary>> {
   await connectToDatabase();
-  const rows = await ChatMessage.aggregate<{ _id: Types.ObjectId; count: number }>([
-    { $match: { restaurantId: new Types.ObjectId(restaurantId), sender: "CUSTOMER", readAt: null } },
-    { $group: { _id: "$orderId", count: { $sum: 1 } } },
+  const rows = await ChatMessage.aggregate<{ _id: Types.ObjectId; unread: number; total: number }>([
+    { $match: { restaurantId: new Types.ObjectId(restaurantId) } },
+    {
+      $group: {
+        _id: "$orderId",
+        total: { $sum: 1 },
+        unread: {
+          $sum: { $cond: [{ $and: [{ $eq: ["$sender", "CUSTOMER"] }, { $not: ["$readAt"] }] }, 1, 0] },
+        },
+      },
+    },
   ]);
-  return Object.fromEntries(rows.map((r) => [r._id.toString(), r.count]));
+  return Object.fromEntries(rows.map((r) => [r._id.toString(), { unread: r.unread, total: r.total }]));
 }

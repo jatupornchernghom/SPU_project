@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { PickupQrScanner } from "@/components/restaurant/pickup-qr-scanner";
 import { ChatBadgeButton, RestaurantChatSheet } from "@/components/chat/order-chat";
 import { playNewOrderSound, unlockNewOrderSound } from "@/lib/new-order-sound";
-import type { OrderStatus, SerializedOrder } from "@/types";
+import type { ChatSummary, OrderStatus, SerializedOrder } from "@/types";
+import { cn } from "cn";
 
 const ACTIVE_STATUSES: OrderStatus[] = ["ORDER_RECEIVED", "PREPARING", "READY_FOR_PICKUP"];
 
@@ -37,15 +38,15 @@ const NEXT_ACTION: Partial<Record<OrderStatus, { label: string; next: OrderStatu
 export function DashboardBoard({
   restaurantId,
   initialOrders,
-  initialUnreadChats = {},
+  initialChats = {},
 }: {
   restaurantId: string;
   initialOrders: SerializedOrder[];
-  /** Unread customer chat messages per order id. */
-  initialUnreadChats?: Record<string, number>;
+  /** Per order id: unread customer messages and total messages. */
+  initialChats?: Record<string, ChatSummary>;
 }) {
   const [orders, setOrders] = useState(initialOrders);
-  const [unreadChats, setUnreadChats] = useState(initialUnreadChats);
+  const [chats, setChats] = useState(initialChats);
   const [chatOrder, setChatOrder] = useState<SerializedOrder | null>(null);
   const chatOrderIdRef = useRef<string | null>(null);
   useEffect(() => {
@@ -54,7 +55,7 @@ export function DashboardBoard({
 
   function openChat(order: SerializedOrder) {
     setChatOrder(order);
-    setUnreadChats((prev) => ({ ...prev, [order.id]: 0 }));
+    setChats((prev) => ({ ...prev, [order.id]: { unread: 0, total: prev[order.id]?.total ?? 0 } }));
   }
   const [pickupCode, setPickupCode] = useState("");
   const [verifying, setVerifying] = useState(false);
@@ -94,8 +95,12 @@ export function DashboardBoard({
       return exists ? prev.map((o) => (o.id === updated.id ? updated : o)) : [updated, ...prev];
     });
   }, (message) => {
-    if (message.sender !== "CUSTOMER" || chatOrderIdRef.current === message.orderId) return;
-    setUnreadChats((prev) => ({ ...prev, [message.orderId]: (prev[message.orderId] ?? 0) + 1 }));
+    const alert = message.sender === "CUSTOMER" && chatOrderIdRef.current !== message.orderId;
+    setChats((prev) => {
+      const current = prev[message.orderId] ?? { unread: 0, total: 0 };
+      return { ...prev, [message.orderId]: { unread: current.unread + (alert ? 1 : 0), total: current.total + 1 } };
+    });
+    if (!alert) return;
     const order = ordersRef.current.find((o) => o.id === message.orderId);
     playNewOrderSound();
     toast(`ข้อความจากลูกค้า${order ? ` คิว ${order.queueNumber}` : ""}`, {
@@ -213,7 +218,10 @@ export function DashboardBoard({
             {pendingPaymentOrders.map((order) => (
               <div
                 key={order.id}
-                className="bg-status-waiting-bg border-2 border-status-waiting-fg/30 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                className={cn(
+                  "bg-status-waiting-bg border-2 border-status-waiting-fg/30 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3",
+                  (chats[order.id]?.unread ?? 0) > 0 && "border-primary ring-2 ring-primary/30"
+                )}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-12 h-12 rounded-lg bg-card text-status-waiting-fg flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
@@ -230,7 +238,7 @@ export function DashboardBoard({
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:flex-shrink-0">
-                  <ChatBadgeButton unread={unreadChats[order.id] ?? 0} onClick={() => openChat(order)} />
+                  <ChatBadgeButton chat={chats[order.id]} onClick={() => openChat(order)} />
                   <Button
                     size="sm"
                     disabled={confirmingPaymentId === order.id}
@@ -263,7 +271,10 @@ export function DashboardBoard({
               return (
                 <div
                   key={order.id}
-                  className="bg-card border border-border rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                  className={cn(
+                    "bg-card border border-border rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3",
+                    (chats[order.id]?.unread ?? 0) > 0 && "border-primary bg-primary/5 ring-2 ring-primary/30"
+                  )}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-display font-extrabold text-sm flex-shrink-0">
@@ -285,7 +296,7 @@ export function DashboardBoard({
                   </div>
                   <div className="flex items-center justify-between sm:justify-end gap-2 sm:flex-shrink-0">
                     <StatusBadge status={order.status} />
-                    <ChatBadgeButton unread={unreadChats[order.id] ?? 0} onClick={() => openChat(order)} />
+                    <ChatBadgeButton chat={chats[order.id]} onClick={() => openChat(order)} />
                     {action && (
                       <Button
                         size="sm"

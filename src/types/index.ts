@@ -144,3 +144,6 @@ export type SerializedChatMessage = {
   createdAt: string;
   readAt: string | null;
 };
+
+/** Per order, for the restaurant dashboard: unread customer messages and total messages. */
+export type ChatSummary = { unread: number; total: number };
