@@ -6,6 +6,7 @@ import { User } from "@/models/User";
 import { Menu } from "@/models/Menu";
 import { listOrdersForUser } from "@/services/order.service";
 import { NotificationToggle } from "@/components/profile/notification-toggle";
+import { PushNotificationButton } from "@/components/notifications/push-notification-button";
 import { ChangePasswordDialog } from "@/components/profile/change-password-dialog";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { OrderCard } from "@/components/order/order-card";
@@ -103,6 +104,12 @@ export default async function ProfilePage() {
             <span className="text-sm font-semibold text-foreground">การแจ้งเตือน</span>
           </div>
           <NotificationToggle initialEnabled={user.notificationsEnabled} />
+        </div>
+        <div className="flex flex-col gap-2 px-4 py-3">
+          <span className="text-xs text-muted-foreground">
+            แจ้งเตือนเด้งบนมือถือ/คอมเมื่อร้านเริ่มทำและเมื่ออาหารพร้อม (ต้องเปิดสวิตช์ด้านบนด้วย)
+          </span>
+          <PushNotificationButton />
         </div>
         <ChangePasswordDialog />
       </section>

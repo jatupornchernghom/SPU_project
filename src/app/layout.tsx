@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   title: "SkipQ — สั่งอาหารล่วงหน้า ข้ามคิว",
   description:
     "แพลตฟอร์ม Pre-order อาหารและติดตามคิวแบบ Real-time สำหรับโรงอาหารมหาวิทยาลัยศรีปทุม",
+  icons: { icon: "/icons/192", apple: "/icons/180" },
+  appleWebApp: { capable: true, title: "SkipQ", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
@@ -26,6 +28,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#e6007e",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

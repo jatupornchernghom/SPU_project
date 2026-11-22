@@ -6,6 +6,8 @@ import { useOrderStream } from "@/hooks/use-order-stream";
 import { StatusTimeline } from "@/components/queue/status-timeline";
 import { StatusBadge } from "@/components/queue/status-badge";
 import { ReviewForm } from "@/components/review/review-form";
+import { CancelOrderButton } from "@/components/order/cancel-order-button";
+import { PushNotificationButton } from "@/components/notifications/push-notification-button";
 import type { SerializedOrder, SerializedReview } from "@/types";
 
 export function OrderTracker({
@@ -29,10 +31,26 @@ export function OrderTracker({
         <StatusBadge status={order.status} />
       </div>
 
-      {order.paymentStatus === "PENDING" && (
+      {order.paymentStatus === "PENDING" && order.status !== "CANCELLED" && (
         <div className="flex items-center gap-2 rounded-xl bg-status-waiting-bg px-4 py-3 text-sm font-semibold text-status-waiting-fg">
           <Clock size={16} className="flex-shrink-0" />
           รอร้านยืนยันรับยอดโอน — หากโอนแล้วแต่สถานะยังไม่เปลี่ยน รอสักครู่หรือแจ้งพนักงานหน้าร้าน
+        </div>
+      )}
+
+      {canReview && (order.status === "ORDER_RECEIVED" || order.status === "PREPARING") && (
+        <PushNotificationButton compact />
+      )}
+
+      {canReview &&
+        order.status === "ORDER_RECEIVED" &&
+        !(order.paymentMethod === "QR_PAYMENT" && order.paymentStatus === "PAID") && (
+          <CancelOrderButton order={order} />
+        )}
+
+      {order.status === "CANCELLED" && order.paymentStatus === "REFUNDED" && (
+        <div className="rounded-xl bg-muted px-4 py-3 text-sm font-semibold text-muted-foreground text-center">
+          คืนเงิน ฿{order.total.toLocaleString("th-TH")} แล้ว
         </div>
       )}
 
@@ -52,9 +70,11 @@ export function OrderTracker({
         <div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center">
           <span className="text-xs text-muted-foreground">เวลารอโดยประมาณ</span>
           <span className="font-display text-3xl font-extrabold text-foreground">
-            {order.status === "READY_FOR_PICKUP" || order.status === "COMPLETED"
-              ? 0
-              : order.estimatedWaitTime}{" "}
+            {order.status === "CANCELLED"
+              ? "-"
+              : order.status === "READY_FOR_PICKUP" || order.status === "COMPLETED"
+                ? 0
+                : order.estimatedWaitTime}{" "}
             <span className="text-base font-semibold">นาที</span>
           </span>
         </div>

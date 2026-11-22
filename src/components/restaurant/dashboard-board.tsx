@@ -45,6 +45,10 @@ export function DashboardBoard({
   const [verifying, setVerifying] = useState(false);
   const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
   const knownOrderIds = useRef(new Set(initialOrders.map((o) => o.id)));
+  const ordersRef = useRef(orders);
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
 
   useEffect(() => {
     window.addEventListener("pointerdown", unlockNewOrderSound);
@@ -62,6 +66,12 @@ export function DashboardBoard({
       toast(`มีออเดอร์ใหม่เข้ามา! คิว ${updated.queueNumber}`, {
         description: updated.items.map((i) => `${i.name} x${i.quantity}`).join(", "),
         icon: <Bell size={16} />,
+      });
+    }
+    const previous = ordersRef.current.find((o) => o.id === updated.id);
+    if (updated.status === "CANCELLED" && previous && ACTIVE_STATUSES.includes(previous.status)) {
+      toast.warning(`ออเดอร์คิว ${updated.queueNumber} ถูกยกเลิก`, {
+        description: updated.items.map((i) => `${i.name} x${i.quantity}`).join(", "),
       });
     }
     setOrders((prev) => {

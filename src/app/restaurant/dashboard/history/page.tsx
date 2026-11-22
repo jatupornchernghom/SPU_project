@@ -4,6 +4,8 @@ import { getRestaurantOrderSummary, listPastOrdersForRestaurant } from "@/servic
 import { getRestaurantById } from "@/services/restaurant.service";
 import { listReviewsForRestaurant } from "@/services/review.service";
 import { OrderCard } from "@/components/order/order-card";
+import { getSalesReport } from "@/services/sales.service";
+import { SalesReportSection } from "@/components/charts/sales-report-section";
 import { ReviewList } from "@/components/review/review-list";
 import { StarRating } from "@/components/review/star-rating";
 
@@ -21,11 +23,12 @@ export default async function RestaurantHistoryPage() {
     );
   }
 
-  const [summary, pastOrders, restaurant, reviews] = await Promise.all([
+  const [summary, pastOrders, restaurant, reviews, report] = await Promise.all([
     getRestaurantOrderSummary(restaurantId),
     listPastOrdersForRestaurant(restaurantId),
     getRestaurantById(restaurantId),
     listReviewsForRestaurant(restaurantId, 10),
+    getSalesReport({ restaurantId, days: 14 }),
   ]);
 
   const cards = [
@@ -48,6 +51,8 @@ export default async function RestaurantHistoryPage() {
           </div>
         ))}
       </div>
+
+      <SalesReportSection report={report} />
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide flex flex-wrap items-center gap-2">

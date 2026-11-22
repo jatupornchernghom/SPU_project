@@ -176,6 +176,39 @@ export async function updateOrderStatus(
 }
 
 /**
+ * A customer cancelling their own order. Only allowed before the kitchen
+ * starts (ORDER_RECEIVED). Mock-gateway payments are marked REFUNDED; a
+ * PromptPay transfer the restaurant already confirmed can't be refunded by
+ * the app, so that case has to go through the restaurant.
+ */
+export async function cancelOrderByCustomer(orderId: string, userId: string): Promise<SerializedOrder> {
+  await connectToDatabase();
+
+  const order = await Order.findById(orderId);
+  if (!order) throw new OrderError("ไม่พบคำสั่งซื้อนี้", 404);
+  if (order.userId.toString() !== userId) throw new OrderError("คุณไม่มีสิทธิ์ยกเลิกคำสั่งซื้อนี้", 403);
+
+  if (order.status === "CANCELLED") throw new OrderError("ออเดอร์นี้ถูกยกเลิกไปแล้ว", 400);
+  if (order.status !== "ORDER_RECEIVED") {
+    throw new OrderError("ร้านเริ่มทำอาหารแล้ว ยกเลิกไม่ได้ — กรุณาติดต่อร้าน", 400);
+  }
+  if (order.paymentMethod === "QR_PAYMENT" && order.paymentStatus === "PAID") {
+    throw new OrderError("ร้านยืนยันรับเงินแล้ว กรุณาติดต่อร้านเพื่อยกเลิกและขอเงินคืน", 400);
+  }
+
+  order.status = "CANCELLED";
+  if (order.paymentStatus === "PAID") order.paymentStatus = "REFUNDED";
+  await order.save();
+  await Queue.updateOne({ orderId: order._id }, { status: "CANCELLED" });
+
+  const restaurant = await Restaurant.findById(order.restaurantId).select("name");
+  const serialized = serializeOrder(order, restaurant?.name ?? "");
+  publishOrderUpdate(serialized);
+
+  return serialized;
+}
+
+/**
  * Restaurant staff manually confirming they received the PromptPay transfer
  * for an order (see the note in `createOrder`). This only flips
  * `paymentStatus`; it does not change `status` — staff still click through

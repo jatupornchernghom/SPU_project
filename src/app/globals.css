@@ -122,7 +122,7 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: #ff4fa8;
-  --chart-1: #ff4fa8;
+  --chart-1: #f43f9e; /* validated for chart marks on the dark card surface */
   --chart-2: #ff8360;
   --chart-3: #4cd6fb;
   --chart-4: #fbbf24;

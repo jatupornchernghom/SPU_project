@@ -1,10 +1,12 @@
 import { ClipboardList, Clock, TrendingUp, Wallet } from "lucide-react";
 import { getAdminStats } from "@/services/admin.service";
+import { getSalesReport } from "@/services/sales.service";
+import { SalesReportSection } from "@/components/charts/sales-report-section";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
-  const stats = await getAdminStats();
+  const [stats, report] = await Promise.all([getAdminStats(), getSalesReport({ days: 14 })]);
 
   const cards = [
     { label: "คำสั่งซื้อทั้งหมด", value: stats.totalOrders, icon: ClipboardList },
@@ -27,9 +29,11 @@ export default async function AdminOverviewPage() {
         ))}
       </div>
 
+      <SalesReportSection report={report} />
+
       <div className="grid md:grid-cols-2 gap-4">
         <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
-          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide">เมนูยอดนิยม</h2>
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wide">เมนูยอดนิยม (ตลอดกาล)</h2>
           {stats.popularMenu.length === 0 ? (
             <p className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</p>
           ) : (

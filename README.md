@@ -24,6 +24,7 @@ cp .env.example .env.local
 | `AUTH_SECRET` | Secret used by Auth.js to sign session JWTs. Generate one with `npx auth secret` |
 | `NEXTAUTH_URL` | Base URL of the app, `http://localhost:3000` in development |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | *(optional)* Google OAuth client for "Sign in with Google" (`@spumail.net` only). The button is hidden when unset — setup steps in [docs/deploy-render.md](docs/deploy-render.md) |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` | *(optional)* Web push ("your food is ready" on the phone). Generate a key pair with `npx web-push generate-vapid-keys`; subject is a `mailto:` contact. Without them the enable-notifications button is hidden |
 | `TZ` | *(production)* `Asia/Bangkok`, so daily queue / order numbers reset at Thai midnight |
 
 ## 3. MongoDB Setup
@@ -101,6 +102,8 @@ scripts/seed.ts                 database seed script
 | `GET /api/orders/:id` | Order detail (owner, assigned restaurant staff, or admin only) |
 | `PATCH /api/orders/:id/status` | Advance order status (staff/admin) |
 | `PATCH /api/orders/:id/payment` | Confirm a PromptPay transfer was received (staff/admin) |
+| `POST /api/orders/:id/cancel` | Customer cancels their own order before cooking starts (mock payments are refunded) |
+| `GET/POST/DELETE /api/push` | VAPID public key · save / remove this device's push subscription |
 | `POST /api/orders/:id/review` | Rate a completed order 1–5 stars + comment (order owner, once) |
 | `PATCH /api/restaurants/:id/status` | Open / close the store (its own staff, or admin) |
 | `GET/POST /api/admin/users` · `DELETE /api/admin/users/:id` | List / create staff, restaurant and admin accounts (admin) |
